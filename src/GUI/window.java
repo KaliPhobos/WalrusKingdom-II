@@ -1,8 +1,8 @@
-package Screen;
+package GUI;
 
 import javax.swing.JFrame;
 
-public class GUI {
+public class window {
 	private int pxlWidth = 408;
 	private int pxlHeight = 288;
 	private int tileWidth = 17;
@@ -10,7 +10,7 @@ public class GUI {
 	private JFrame frame;
 	private int tilesize = 24;
 	
-	public GUI() {
+	public window() {
 		System.out.println("GUI element created");
 	}
 	
@@ -96,7 +96,7 @@ public class GUI {
 		// Set the frame's tile size, using pixels as a unit.
 		// May force a GUI reset depending on the given parameter
 		this.tilesize = tilesize;
-		setPxlWidth(tileWidth*tilesize, doRedraw);
+		setPxlWidth(tileWidth*tilesize, false);
 		setPxlHeight(tileHeight*tilesize, doRedraw);	// force full redraw
 	}
 	
@@ -106,6 +106,10 @@ public class GUI {
 	
 	public int getTileHeight() {
 		return this.tileHeight;
+	}
+	
+	public int getTileSize() {
+		return this.tilesize;
 	}
 	
 	public int confirm(int value) {
@@ -134,7 +138,9 @@ public class GUI {
 		JFrame frame = new JFrame("WalrusKingdom "+this.pxlWidth+"x"+this.pxlHeight);
         frame.setIgnoreRepaint(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// frame.setSize(this.pxlWidth, this.pxlHeight);		// set window size
+        frame.add("Center", new TileArea(this.pxlWidth, this.pxlHeight, getTileSize()));
+		frame.pack();
+	    frame.setVisible(true);
 	    this.frame = frame;
 	}
 }
