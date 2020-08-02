@@ -1,9 +1,9 @@
 package main;
 
-import GUI.window;
-import Screen.Map;
-import Screen.Screen;
-import General.debug;
+import kaliphobos.walruskingdom.general.debug;
+import kaliphobos.walruskingdom.gui.window;
+import kaliphobos.walruskingdom.screen.Map;
+import kaliphobos.walruskingdom.screen.Screen;
 
 public class main {
 

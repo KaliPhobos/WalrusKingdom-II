@@ -1,4 +1,4 @@
-package general;
+package General;
 
 public class debug {
 	private static long initialTimestamp;

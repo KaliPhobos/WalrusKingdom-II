@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import main.main;
+import kaliphobos.walruskingdom.main;
 
 public class TileArea extends Component {
 	public static BufferedImage m_image;

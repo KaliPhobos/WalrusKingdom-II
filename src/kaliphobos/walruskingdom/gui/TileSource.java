@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import General.debug;
+import kaliphobos.walruskingdom.general.debug;
 
 public class TileSource extends Component {
 	private BufferedImage bufImage;
