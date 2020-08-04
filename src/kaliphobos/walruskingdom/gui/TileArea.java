@@ -22,7 +22,7 @@ public class TileArea extends Component {
 		this.tileSize = tileSize;
 		screenWidth = width;
 		screenHeight = height;
-		this.tileSource = new TileSource("", this.tileSize);
+		this.tileSource = new TileSource("/kaliphobos/walruskingdom/assets/tiles_x24.png", this.tileSize);
 		this.bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
@@ -39,9 +39,30 @@ public class TileArea extends Component {
 		this.tileSource = tileSource;
 	}
 	
-	/** draws a regular tile used inside the game (map) */
-	public void drawTile(int tilex, int tiley, int x, int y) {
+	/** Copies an area of the tile source to the screen.
+	 * 
+	 * @param screenx On-Screen X position
+	 * @param screeny On-Screen Y position
+	 * @param tilex Source image x position
+	 * @param tiley Source image y position
+	 */
+	public void drawTile(int screenx, int screeny, int tilex, int tiley) {
 		Graphics2D g = this.bufImage.createGraphics();
-	    g.drawImage(this.tileSource.getTile(tilex, tiley), x, y, this.tileSize, this.tileSize, null);
+	    g.drawImage(this.tileSource.getTile(tilex, tiley), screenx, screeny, this.tileSize, this.tileSize, null);
+	}
+	
+	/** Copies an area of the tile source to the screen.
+	 * 
+	 * @param screenx On-Screen X position
+	 * @param screeny On-Screen Y position
+	 * @param tilex Source image x position
+	 * @param tiley Source image y position
+	 * @param tilewidth Image width in pixels
+	 * @param tileheight Image height in pixels
+	 */
+	public void drawTile(int screenx, int screeny, int tilex, int tiley, int tilewidth, int tileheight) {
+		Graphics2D g = this.bufImage.createGraphics();
+		g.drawImage(this.tileSource.getTile(tilex, tiley, tilewidth, tileheight), screenx, screeny, tilewidth, tileheight, null);
+		g.drawImage(this.bufImage, 0, 0, null);
 	}
 }

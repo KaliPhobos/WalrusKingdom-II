@@ -39,6 +39,7 @@ public class TileSource extends Component {
 		return (id-(id%10))/10;
 	}
 	
+	/** Returns a tile from the instance's default tile source with it's default tile resolution */
 	public BufferedImage getTile(int tilex, int tiley) {
 		if (this.bufImage == null) {
 			return null;

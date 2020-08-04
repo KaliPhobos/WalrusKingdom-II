@@ -14,6 +14,7 @@ public class window {
 	private int tileHeight = 12;
 	private JFrame frame;
 	private int tilesize = 24;
+	private TileArea tileArea;
 	
 	public window() {
 		System.out.println("GUI element created");
@@ -186,11 +187,22 @@ public class window {
 	private void createWindow() {
 		System.out.println("A new window is being created");
 		JFrame frame = new JFrame("WalrusKingdom "+this.pxlWidth+"x"+this.pxlHeight);
-        frame.setIgnoreRepaint(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add("Center", new TileArea(this.pxlWidth, this.pxlHeight, getTileSize()));
+		frame.setIgnoreRepaint(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.tileArea = new TileArea(this.pxlWidth, this.pxlHeight, getTileSize());
+		frame.add("Center", this.tileArea);
 		frame.pack();
-	    frame.setVisible(true);
+		frame.setVisible(true);
 	    this.frame = frame;
+	}
+
+	public void Demo() {
+		this.tileArea.drawTile(24, 50, 0, 10);
+		this.tileArea.drawTile(0, 50, 0, 0, 26, 101);		
+	}
+	
+	/** Will refresh the on-screen graphics, only to be called once per intended frame. */
+	public void refresh() {
+		this.frame.repaint();
 	}
 }

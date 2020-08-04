@@ -20,12 +20,14 @@ public class main {
 		gui.setTileHeight(17, false);
 		gui.setTilesize(24, true);				// size of tiles used in the game (24px)
 		
-		
 		Map townMap = new Map(80, 40);
 		Screen previewScreen = new Screen(gui.getTileWidth(), gui.getTileHeight());
 		previewScreen.update(townMap);
 		
 		System.out.println(previewScreen.preview());
 		
+		gui.Demo();
+		gui.refresh();
+
 	}
 }
