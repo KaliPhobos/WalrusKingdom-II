@@ -1,7 +1,12 @@
-package GUI;
+package kaliphobos.walruskingdom.gui;
 
 import javax.swing.JFrame;
 
+/** THe main instance for any graphical output, basically manages the JFrame and anything it touches
+ * 
+ * @author KaliPhobos
+ *
+ */
 public class window {
 	private int pxlWidth = 408;
 	private int pxlHeight = 288;
@@ -14,9 +19,12 @@ public class window {
 		System.out.println("GUI element created");
 	}
 	
+	/** Set the frame's width using pixels as a unit.
+	 * Will force a GUI reset
+	 * 
+	 * @param pxlWidth the new width in pixels
+	 */
 	public void setPxlWidth(int pxlWidth) {
-		// Set the frame's width using pixels as a unit.
-		// Will force a GUI reset
 		pxlWidth = confirm(pxlWidth);
 		this.pxlWidth = pxlWidth;
 		this.tileWidth = pxlWidth/tilesize;
@@ -24,10 +32,13 @@ public class window {
 	}
 	
 
-	
+	/** Set the frame's width using pixels as a unit.
+	 * May force a GUI reset depending on the given parameter (which is recommended)
+	 * 
+	 * @param pxlWidth the new width in pixels
+	 * @param doRedraw determines whether to reset the GUI or not
+	 */
 	public void setPxlWidth(int pxlWidth, boolean doRedraw) {
-		// Set the frame's width using pixels as a unit.
-		// May force a GUI reset depending on the given parameter (which is recommended)
 		pxlWidth = confirm(pxlWidth);
 		this.pxlWidth = pxlWidth;
 		this.tileWidth = pxlWidth/tilesize;
@@ -36,18 +47,25 @@ public class window {
 		}
 	}
 	
+	/** Set the frame's height using pixels as a unit.
+	 * Will force a GUI reset
+	 * 
+	 * @param pxlHeight the new height in pixels
+	 */
 	public void setPxlHeight(int pxlHeight) {
-		// Set the frame's height using pixels as a unit.
-		// Will force a GUI reset
 		pxlHeight = confirm(pxlHeight);
 		this.pxlHeight = pxlHeight;
 		this.tileHeight = pxlHeight/tilesize;
 		GUIreset();
 	}
 	
+	/** Set the frame's height using pixels as a unit.
+	 * May force a GUI reset depending on the given parameter (which is recommended)
+	 * 
+	 * @param pxlHeight the new height in pixels
+	 * @param doRedraw determines whether to reset the GUI or not
+	 */
 	public void setPxlHeight(int pxlHeight, boolean doRedraw) {
-		// Set the frame's width using pixels as a unit.
-		// May force a GUI reset depending on the given parameter (which is recommended)
 		pxlHeight = confirm(pxlHeight);
 		this.pxlHeight = pxlHeight;
 		this.tileHeight = pxlHeight/tilesize;
@@ -56,65 +74,93 @@ public class window {
 		}
 	}
 	
+	/** Set the frame's width using tiles as a unit (X * this.tilesize).
+	 * Will force a GUI reset
+	 * 
+	 * @param tileWidth the new width in tiles
+	 */
 	public void setTileWidth(int tileWidth) {
-		// Set the frame's width using tiles as a unit (X * this.tilesize).
-		// Will force a GUI reset
 		this.tileWidth = tileWidth;
 		setPxlWidth(tileWidth*tilesize);
 	}
 	
+	/** Set the frame's width using tiles as a unit (X * this.tilesize).
+	 * May force a GUI reset depending on the given parameter (which is recommended)
+	 * 
+	 * @param tileWidth the new width in tiles
+	 * @param doRedraw determines whether to reset the GUI or not
+	 */
 	public void setTileWidth(int tileWidth, boolean doRedraw) {
-		// Set the frame's width using tiles as a unit (X * this.tilesize).
-		// May force a GUI reset depending on the given parameter (which is recommended)
 		this.tileWidth = tileWidth;
 		setPxlWidth(tileWidth*tilesize, doRedraw);
 	}
 	
+	/** Set the frame's height using tiles as a unit (X * this.tilesize).
+	 * Will force a GUI reset
+	 * 
+	 * @param tileHeight the new height in tiles
+	 */
 	public void setTileHeight(int tileHeight) {
-		// Set the frame's height using tiles as a unit (X * this.tilesize).
-		// Will force a GUI reset
 		this.tileHeight = tileHeight;
 		setPxlHeight(tileHeight*tilesize);
 	}
 	
+	/** Set the frame's width using tiles as a unit (X * this.tilesize).
+	 * May force a GUI reset depending on the given parameter (which is recommended)
+	 * 
+	 * @param tileHeight the new height in tiles
+	 * @param doRedraw determines whether to reset the GUI or not
+	 */
 	public void setTileHeight(int tileHeight, boolean doRedraw) {
-		// Set the frame's width using tiles as a unit (X * this.tilesize).
-		// May force a GUI reset depending on the given parameter (which is recommended)
 		this.tileHeight = tileHeight;
 		setPxlHeight(tileHeight*tilesize, doRedraw);
 	}
 	
+	/** Set the frame's tile size, using pixels as a unit.
+	 * Will force a GUI reset
+	 * 
+	 * @param tilesize the new tile size in pixels
+	 */
 	public void setTilesize(int tilesize) {
-		// Set the frame's tile size, using pixels as a unit.
-		// Will force a GUI reset
 		this.tilesize = tilesize;
 		setPxlWidth(tileWidth*tilesize, false);
 		setPxlHeight(tileHeight*tilesize, true);	// force full redraw
 	}
 	
+	/** Set the frame's tile size, using pixels as a unit.
+	 * May force a GUI reset depending on the given parameter
+	 * 
+	 * @param tilesize the new tile size in pixels
+	 * @param doRedraw determines whether to reset the GUI or not
+	 */
 	public void setTilesize(int tilesize, boolean doRedraw) {
-		// Set the frame's tile size, using pixels as a unit.
-		// May force a GUI reset depending on the given parameter
 		this.tilesize = tilesize;
 		setPxlWidth(tileWidth*tilesize, false);
 		setPxlHeight(tileHeight*tilesize, doRedraw);	// force full redraw
 	}
 	
+	/** Boring getter */
 	public int getTileWidth() {
 		return this.tileWidth;
 	}
 	
+	/** Boring getter */
 	public int getTileHeight() {
 		return this.tileHeight;
 	}
 	
+	/** Boring getter */
 	public int getTileSize() {
 		return this.tilesize;
 	}
 	
+	/** Check if a given value can be divided by this.tilesize. If not, paste an error message.
+	 * Faulty values will be corrected to the next smaller (fitting) value.
+	 * 
+	 * @param value the given value which will be checked & corrected
+	 * @return the corrected value
+	 */
 	public int confirm(int value) {
-		// Check if a given value can be divided by this.tilesize. If not, paste an error message.
-		// Faulty values will be corrected to the next smaller (fitting) value.
 		int temp = value%tilesize;
 		if (temp!=0) {
 			System.out.println("Input was adapted to fit parameters. ("+value+" -> "+(value-temp)+")");
@@ -122,9 +168,11 @@ public class window {
 		return value - temp;
 	}
 	
+	/** This method forces the JFrame element to be removed and then recreated
+	 * Effectively this will do a hard GUI reset, fixing any temporary bug
+	 * Please avoid using this excessively as full rendering eats up quite some resources
+	 */
 	public void GUIreset() {
-		// This method forces the JFrame element to be removed and then recreated
-		// Effectively this will do a hard GUI reset, fixing any temporary bug
 		if (this.frame!=null) {
 			// close old window so a new one can be opened
 		}
@@ -132,8 +180,10 @@ public class window {
 		// force full redraw
 	}
 	
+	/** Creates a new instance of the window element 
+	 * Multiple instances may be used to try multiple resolutions and texturepacks at once
+	 */
 	private void createWindow() {
-		// Pretty obvious, it *creates window*
 		System.out.println("A new window is being created");
 		JFrame frame = new JFrame("WalrusKingdom "+this.pxlWidth+"x"+this.pxlHeight);
         frame.setIgnoreRepaint(true);

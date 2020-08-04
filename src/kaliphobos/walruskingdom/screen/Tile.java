@@ -1,12 +1,22 @@
-package Screen;
+package kaliphobos.walruskingdom.screen;
 
+/** A single tile, given a fixed id
+ * 
+ * @author KaliPhobos
+ *
+ */
 public class Tile {
-	// A single tile, given a fixed id
 	private final int id;
 	private boolean isSolid;
 	private int pictureId;
 //	private final Trigger TileTrigger;
 	
+	/** Default constructor
+	 * 
+	 * @param id the tile's id which it will be called by (to be used it world map data)
+	 * @param picId the tile's position in the given assets file. Usually equals the tile's id
+	 * @param isSolid determines whether the tile may be entered by any character.
+	 */
 	public Tile(int id, int picId, boolean isSolid) {
 		this.id = id;
 		this.pictureId = picId;

@@ -1,7 +1,11 @@
-package Screen;
+package kaliphobos.walruskingdom.screen;
 
+/** A combination of a foreground and background Tile item, making up the game map
+ * 
+ * @author KaliPhobos
+ *
+ */
 public class MapTile {
-	// A combination of a foreground and background Tile item, making up the game map
 	private Tile foregroundTile;
 	private Tile backgroundTile;
 	

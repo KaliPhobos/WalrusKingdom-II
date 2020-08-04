@@ -1,7 +1,11 @@
-package Screen;
+package kaliphobos.walruskingdom.screen;
 
+/** Contains a 2D array of MapTile elements - a combination of a foreground and background Tile item
+ * 
+ * @author KaliPhobos
+ *
+ */
 public class Map {
-	// Contains a 2D array of MapTile elements - a combination of a foreground and background Tile item
 	private MapTile[][] data;
 	private int width;
 	private int height;

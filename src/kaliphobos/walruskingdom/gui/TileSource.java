@@ -1,4 +1,4 @@
-package GUI;
+package kaliphobos.walruskingdom.gui;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;
@@ -8,12 +8,17 @@ import javax.swing.JOptionPane;
 
 import kaliphobos.walruskingdom.general.debug;
 
+/** Manages the BufferedImage's source files and id-to-tile conversions
+ * 
+ * @author c4ooo@CodeWalrus, KaliPhobos
+ *
+ */
 public class TileSource extends Component {
 	private BufferedImage bufImage;
 	private int tileSize;
 	
+	/** Reads the source image file used for map tiles in the game */
 	public TileSource(String filename, int tileSize) {
-		// Reads the source image file used for map tiles in the game
 		this.tileSize = tileSize;
 		try {
 			this.bufImage = ImageIO.read(TileSource.class.getResourceAsStream(filename));
@@ -23,14 +28,14 @@ public class TileSource extends Component {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/** Determines the accurate x position for a given tile ID inside a 10 tile wide source image */
 	public static int getXPos(int id) {
-		// Determines the accurate x position for a given tile ID inside a 10 tile wide source image
 		return (id%10);
 	}
 	
+	/** Determines the accurate y position for a given tile ID inside a 10 tile wide source image */
 	public static int getYPos(int id) {
-		// Determines the accurate y position for a given tile ID inside a 10 tile wide source image
 		return (id-(id%10))/10;
 	}
 	
