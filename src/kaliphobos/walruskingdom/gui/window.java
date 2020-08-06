@@ -201,6 +201,10 @@ public class window {
 		this.tileArea.drawTile(0, 50, 0, 0, 26, 101);		
 	}
 	
+	public void pasteToScreen(int[][] screen) {
+		//for (int x=0; )
+	}
+	
 	/** Will refresh the on-screen graphics, only to be called once per intended frame. */
 	public void refresh() {
 		this.frame.repaint();

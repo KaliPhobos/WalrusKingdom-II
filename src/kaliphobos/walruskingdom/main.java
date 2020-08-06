@@ -17,11 +17,11 @@ public class main {
 	public static void main(String[] args) {
 		debug.setInitialTimestamp(System.currentTimeMillis());
 		
-		Map townMap = new Map(100, 40);
+		Map townMap = new Map(100, 75);
 
 		window gui = new window();
-		gui.setTileWidth(31, false);		// game resolution
-		gui.setTileHeight(17, false);
+		gui.setTileWidth(16, false);		// game resolution
+		gui.setTileHeight(12, false);
 		gui.setTilesize(24, true);				// size of tiles used in the game (24px)
 		
 		
@@ -29,7 +29,6 @@ public class main {
 		Screen previewScreen = new Screen(gui.getTileWidth()+2, gui.getTileHeight()+2);
 		previewScreen.update(townMap);
 		
-		System.out.println(previewScreen.preview());
 		
 		/*
 		String jsonData = files.ReadFromFile("/kaliphobos/walruskingdom/assets/Maps.json");
@@ -37,8 +36,12 @@ public class main {
 		files.readJSON(jsonData);
 		*/
 		
+		System.out.println(previewScreen.getTile(0,  0).getForeground().getId());
 		gui.Demo();
 		gui.refresh();
+		
+		System.out.println(previewScreen.preview());
+
 
 	}
 }
