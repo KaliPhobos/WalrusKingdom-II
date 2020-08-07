@@ -41,10 +41,12 @@ public class TileSource extends Component {
 	
 	/** Returns a tile from the instance's default tile source with it's default tile resolution */
 	public BufferedImage getTile(int tilex, int tiley) {
+		// System.out.println(tilex+" || "+tiley);
 		if (this.bufImage == null) {
 			return null;
 		}
 		try {
+			// System.out.println(tilex*(this.tileSize+1)+1+" | "+tiley*(this.tileSize+1)+1);
 			return this.bufImage.getSubimage(tilex*(this.tileSize+1)+1, tiley*(this.tileSize+1)+1, this.tileSize, this.tileSize);
 		}
 		catch(Exception e){
@@ -57,7 +59,9 @@ public class TileSource extends Component {
 			return null;
 		}
 		try {
-			return this.bufImage.getSubimage(tileXmin, tileYmin, tileXdim-tileXmin, tileYdim-tileYmin);
+			// System.out.println((tileXdim-tileXmin)+" & "+(tileYdim-tileYmin));
+			// return this.bufImage.getSubimage(tileXmin, tileYmin, tileXdim-tileXmin, tileYdim-tileYmin);
+			return this.bufImage.getSubimage(tileXmin, tileYmin, tileXdim, tileYdim);
 		}
 		catch(Exception e){
 			debug.DebugLog("Couldnt load tile subimage. If BLOCKSIZE==" + this.tileSize + " is correct, better check the sourcefile.");

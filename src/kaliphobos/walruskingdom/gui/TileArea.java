@@ -47,6 +47,7 @@ public class TileArea extends Component {
 	 * @param tiley Source image y position
 	 */
 	public void drawTile(int screenx, int screeny, int tilex, int tiley) {
+		// System.out.println(screenx+" | "+screeny+" | "+tilex+" | "+tiley);
 		Graphics2D g = this.bufImage.createGraphics();
 	    g.drawImage(this.tileSource.getTile(tilex, tiley), screenx, screeny, this.tileSize, this.tileSize, null);
 	}
@@ -61,6 +62,7 @@ public class TileArea extends Component {
 	 * @param tileheight Image height in pixels
 	 */
 	public void drawTile(int screenx, int screeny, int tilex, int tiley, int tilewidth, int tileheight) {
+		// System.out.println("screenx:"+screenx+" | screeny:"+screeny+" | tilex:"+tilex+" | tiley:"+tiley+" | tilewidth:"+tilewidth+" | tileheight:"+tileheight);
 		Graphics2D g = this.bufImage.createGraphics();
 		g.drawImage(this.tileSource.getTile(tilex, tiley, tilewidth, tileheight), screenx, screeny, tilewidth, tileheight, null);
 		g.drawImage(this.bufImage, 0, 0, null);

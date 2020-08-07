@@ -36,8 +36,7 @@ public class main {
 		files.readJSON(jsonData);
 		*/
 		
-		System.out.println(previewScreen.getTile(0,  0).getForeground().getId());
-		gui.Demo();
+		gui.pasteToScreen(previewScreen);
 		gui.refresh();
 		
 		System.out.println(previewScreen.preview());

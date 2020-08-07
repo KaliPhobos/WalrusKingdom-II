@@ -29,23 +29,23 @@ public class Screen {
 		this.width = width;
 		this.height = height;
 		this.data = new MapTile[height*width];
-		System.out.println("Screen Object initialized as "+this.height+"x"+this.width+" (height x width)");
+		System.out.println("Screen Object initialized as "+getHeight()+"x"+getWidth()+" (height x width)");
 	}
 	
 	/** Synchronization method. Will clone visible parts of the world map
 	 * (plus a buffer of 2 tiles for smooth scrolling) to the screen buffer
 	 * which will then be directly pasted to the graphics output*/
 	public MapTile getTile(int x, int y) {
-		System.out.println("x:"+x+" y:"+y+" tile:"+(y*this.width+x));
-		return this.data[y*this.width+x];
+		// System.out.println("Get Tile: x:"+x+" y:"+y+" tile:"+(y*getWidth()+x));
+		return this.data[y*getWidth()+x];
 	}
 	
 	public void update(Map map) {
 		MapTile[] mapData = map.getData();
 		System.out.println("Updating "+this.data.length+" on-screen elements");
-		for (int y=this.screenPosY; y<this.screenPosY+this.height; y++) {	// iterates over lines
-			System.out.println("copy from map's startposition "+(map.getWidth()*y+screenPosY)+" to screen["+((y-this.screenPosY)*this.width)+"] - copy a total of "+(this.width)+" items");
-			System.arraycopy(mapData, map.getWidth()*y+screenPosX, this.data, (y-this.screenPosY)*this.width, this.width);
+		for (int y=this.screenPosY; y<this.screenPosY+getHeight(); y++) {	// iterates over lines
+			System.out.println("copy from map's startposition "+(map.getWidth()*y+screenPosY)+" to screen["+((y-this.screenPosY)*getWidth())+"] - copy a total of "+(getWidth())+" items");
+			System.arraycopy(mapData, map.getWidth()*y+screenPosX, this.data, (y-this.screenPosY)*getWidth(), getWidth());
 		}
 	}
 	
@@ -53,21 +53,29 @@ public class Screen {
 	public String preview() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Background:\n");
-		for (int y=1; y<this.height-1; y++) {
-			for (int x=1; x<this.width-1; x++) {
+		for (int y=1; y<getHeight()-1; y++) {
+			for (int x=1; x<getWidth()-1; x++) {
 				sb.append(getTile(x, y).getBackground().getId());
 				sb.append(", ");
 			}
 			sb.append("\n");
 		}
 		sb.append("Foreground:\n");
-		for (int y=1; y<this.height-1; y++) {
-			for (int x=1; x<this.width-1; x++) {
+		for (int y=1; y<getHeight()-1; y++) {
+			for (int x=1; x<getWidth()-1; x++) {
 				sb.append(getTile(x, y).getBackground().getId());
 				sb.append(", ");
 			}
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
 	}
 }

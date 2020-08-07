@@ -2,6 +2,8 @@ package kaliphobos.walruskingdom.gui;
 
 import javax.swing.JFrame;
 
+import kaliphobos.walruskingdom.screen.Screen;
+
 /** THe main instance for any graphical output, basically manages the JFrame and anything it touches
  * 
  * @author KaliPhobos
@@ -195,14 +197,17 @@ public class window {
 		frame.setVisible(true);
 	    this.frame = frame;
 	}
-
-	public void Demo() {
-		this.tileArea.drawTile(24, 50, 0, 10);
-		this.tileArea.drawTile(0, 50, 0, 0, 26, 101);		
-	}
 	
-	public void pasteToScreen(int[][] screen) {
-		//for (int x=0; )
+	public void pasteToScreen(Screen screen) {
+		refresh();
+		for (int y=1; y<screen.getHeight()-3; y++) {
+			for (int x=1; x<screen.getWidth()-3; x++) {
+				int id = screen.getTile(x, y).getBackground().getPictureId();
+				// System.out.println("sourceX:"+getTileSize()*x+" sourceY:"+getTileSize()*y+" id:"+id+" x:"+(id%10)*(getTileSize()+1)+"("+(id%10)+") y:"+((id-(id%10))/10)*(getTileSize()+1)+" ("+((id-(id%10))/10)+")");
+				this.tileArea.drawTile(getTileSize()*x, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize(), getTileSize());
+				refresh();
+			}
+		}
 	}
 	
 	/** Will refresh the on-screen graphics, only to be called once per intended frame. */
