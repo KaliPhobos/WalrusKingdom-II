@@ -210,6 +210,23 @@ public class window {
 		}
 	}
 	
+	public void pasteToScreen(Screen screen, int xOffset) {
+		refresh();
+		for (int y=1; y<screen.getHeight()-3; y++) {
+			if (xOffset>0) {
+				int id = screen.getTile(0, y).getBackground().getPictureId();
+				this.tileArea.drawTile(0, getTileSize()*y, (id%10)*(getTileSize()+1)+getTileSize()-xOffset, ((id-(id%10))/10)*(getTileSize()+1), xOffset, getTileSize());
+			}
+			for (int x=1; x<screen.getWidth()-3; x++) {
+				int id = screen.getTile(x, y).getBackground().getPictureId();
+				// System.out.println("sourceX:"+getTileSize()*x+" sourceY:"+getTileSize()*y+" id:"+id+" x:"+(id%10)*(getTileSize()+1)+"("+(id%10)+") y:"+((id-(id%10))/10)*(getTileSize()+1)+" ("+((id-(id%10))/10)+")");
+				this.tileArea.drawTile(getTileSize()*x-getTileSize()+xOffset, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize(), getTileSize());
+				refresh();
+			}
+			
+		}
+	}
+	
 	/** Will refresh the on-screen graphics, only to be called once per intended frame. */
 	public void refresh() {
 		this.frame.repaint();

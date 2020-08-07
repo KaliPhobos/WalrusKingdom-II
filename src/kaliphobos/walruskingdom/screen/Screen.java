@@ -78,4 +78,11 @@ public class Screen {
 	public int getHeight() {
 		return this.height;
 	}
+	
+	// will rewrite this later, just use it for the time being
+	public void walk(int x, int y) {
+		this.screenPosX+=x;
+		this.screenPosY+=y;
+		System.out.println("x:"+this.screenPosX+" y:"+this.screenPosY);
+	}
 }

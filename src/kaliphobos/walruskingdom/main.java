@@ -29,17 +29,25 @@ public class main {
 		Screen previewScreen = new Screen(gui.getTileWidth()+2, gui.getTileHeight()+2);
 		previewScreen.update(townMap);
 		
+		System.out.println(previewScreen.preview());
+
+		
 		
 		/*
 		String jsonData = files.ReadFromFile("/kaliphobos/walruskingdom/assets/Maps.json");
 		System.out.println(jsonData);
 		files.readJSON(jsonData);
 		*/
+		while (true) {
+			for (int xOffset=24; xOffset>0; xOffset--) {
+				gui.pasteToScreen(previewScreen, xOffset);
+				gui.refresh();
+			}
+			previewScreen.walk(1, 0);
+			previewScreen.update(townMap);
+		}
 		
-		gui.pasteToScreen(previewScreen);
-		gui.refresh();
 		
-		System.out.println(previewScreen.preview());
 
 
 	}
