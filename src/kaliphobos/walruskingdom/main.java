@@ -27,7 +27,7 @@ public class main {
 		
 		// Increase screen size by 2 tiles to create a buffer which is necessary for smooth scrolling
 		Screen previewScreen = new Screen(gui.getTileWidth()+2, gui.getTileHeight()+2);
-		previewScreen.update(townMap);
+		previewScreen.setMap(townMap);
 		
 		System.out.println(previewScreen.preview());
 
@@ -40,11 +40,16 @@ public class main {
 		*/
 		while (true) {
 			for (int xOffset=24; xOffset>0; xOffset--) {
-				gui.pasteToScreen(previewScreen, xOffset);
+				gui.pasteToScreen(previewScreen, xOffset, 0);
 				gui.refresh();
+				try {
+					//Thread.sleep(1000);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			previewScreen.walk(1, 0);
-			previewScreen.update(townMap);
 		}
 		
 		

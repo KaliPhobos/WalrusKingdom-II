@@ -38,12 +38,19 @@ public class Map {
 		System.out.println("Map Object initialized as "+this.width+"x"+this.height);
 	}
 	
+	/** Will return the entire map's raw data as a MapTile[] */
 	public MapTile[] getData() {
 		return this.data;
 	}
 	
+	/** Will return the map's width */
 	public int getWidth() {
 		return this.width;
+	}
+	
+	/** Will return the map's height */
+	public int getHeight() {
+		return this.height;
 	}
 	
 }
