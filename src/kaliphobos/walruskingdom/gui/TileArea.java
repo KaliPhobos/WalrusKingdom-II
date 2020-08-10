@@ -17,6 +17,8 @@ public class TileArea extends Component {
 	private int tileSize;
 	private BufferedImage bufImage;
 	private TileSource tileSource;
+	private Graphics2D g;
+	private BufferedImage[] tiles;
 	
 	public TileArea(int width, int height, int tileSize) {
 		this.tileSize = tileSize;
@@ -24,6 +26,13 @@ public class TileArea extends Component {
 		screenHeight = height;
 		this.tileSource = new TileSource("/kaliphobos/walruskingdom/assets/tiles_x24.png", this.tileSize);
 		this.bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	}
+	
+	public void initialize(int numOfTiles) {
+		this.tiles = new BufferedImage[numOfTiles];
+		for (int count=0; count<tileSize; count++) {
+			this.tiles[count] = this.tileSource.getTile((count%10)*(tileSize+1), ((count-(count%10))/10)*(tileSize+1), tileSize, tileSize);
+		}
 	}
 	
 	public Dimension getPreferredSize() {
@@ -46,10 +55,9 @@ public class TileArea extends Component {
 	 * @param tilex Source image x position
 	 * @param tiley Source image y position
 	 */
-	public void drawTile(int screenx, int screeny, int tilex, int tiley) {
-		// System.out.println(screenx+" | "+screeny+" | "+tilex+" | "+tiley);
+	public void drawTile(int id, int screenx, int screeny) {
 		Graphics2D g = this.bufImage.createGraphics();
-	    g.drawImage(this.tileSource.getTile(tilex, tiley), screenx, screeny, this.tileSize, this.tileSize, null);
+	    g.drawImage(tiles[id], screenx, screeny, this.tileSize, this.tileSize, null);
 	}
 	
 	/** Copies an area of the tile source to the screen.
@@ -62,7 +70,6 @@ public class TileArea extends Component {
 	 * @param tileheight Image height in pixels
 	 */
 	public void drawTile(int screenx, int screeny, int tilex, int tiley, int tilewidth, int tileheight) {
-		// System.out.println("screenx:"+screenx+" | screeny:"+screeny+" | tilex:"+tilex+" | tiley:"+tiley+" | tilewidth:"+tilewidth+" | tileheight:"+tileheight);
 		Graphics2D g = this.bufImage.createGraphics();
 		g.drawImage(this.tileSource.getTile(tilex, tiley, tilewidth, tileheight), screenx, screeny, tilewidth, tileheight, null);
 		g.drawImage(this.bufImage, 0, 0, null);

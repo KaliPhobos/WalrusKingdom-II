@@ -42,12 +42,7 @@ public class main {
 			for (int xOffset=24; xOffset>0; xOffset--) {
 				gui.pasteToScreen(previewScreen, xOffset, 0);
 				gui.refresh();
-				try {
-					//Thread.sleep(1000);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				debug.DebugLog("FRAME");
 			}
 			previewScreen.walk(1, 0);
 		}
