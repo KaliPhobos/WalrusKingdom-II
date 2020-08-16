@@ -2,6 +2,7 @@ package kaliphobos.walruskingdom.gui;
 
 import javax.swing.JFrame;
 
+import kaliphobos.walruskingdom.general.debug;
 import kaliphobos.walruskingdom.screen.Screen;
 
 /** THe main instance for any graphical output, basically manages the JFrame and anything it touches
@@ -19,7 +20,12 @@ public class window {
 	private TileArea tileArea;
 	
 	public window() {
-		System.out.println("GUI element created");
+		System.out.println("GUI element created w/ default resolution");
+	}
+	
+	public window(int resolution) {
+		System.out.println("GUI element created with x"+resolution+" resolution");
+		this.tilesize = resolution;
 	}
 	
 	/** Set the frame's width using pixels as a unit.
@@ -166,7 +172,7 @@ public class window {
 	public int confirm(int value) {
 		int temp = value%tilesize;
 		if (temp!=0) {
-			System.out.println("Input was adapted to fit parameters. ("+value+" -> "+(value-temp)+")");
+			debug.DebugLog("Input was adapted to fit parameters. ("+value+" -> "+(value-temp)+")");
 		}
 		return value - temp;
 	}
@@ -188,7 +194,7 @@ public class window {
 	 * Multiple instances may be used to try multiple resolutions and texturepacks at once
 	 */
 	private void createWindow() {
-		System.out.println("A new window is being created");
+		debug.DebugLog("A new window is being created");
 		JFrame frame = new JFrame("WalrusKingdom "+this.pxlWidth+"x"+this.pxlHeight);
 		frame.setIgnoreRepaint(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -216,7 +222,7 @@ public class window {
 			// Horizontal scrolling only
 			for (int y=1; y<screen.getHeight()-3; y++) {
 				int id = screen.getTile(0, y).getBackground().getPictureId();
-				this.tileArea.drawTile(0, getTileSize()*y, (id%10)*(getTileSize()+1)+getTileSize()-xOffset, ((id-(id%10))/10)*(getTileSize()+1), xOffset, getTileSize());
+				//this.tileArea.drawTile(0, getTileSize()*y, (id%10)*(getTileSize()+1)+getTileSize()-xOffset, ((id-(id%10))/10)*(getTileSize()+1), xOffset, getTileSize());
 				// - - - this.tileArea.drawTile(id, 0, getTileSize()*y, xOffset, getTileSize());
 				int x=1;
 				for (x=1; x<screen.getWidth()-2; x++) {
@@ -226,7 +232,7 @@ public class window {
 				}
 				if (xOffset<getTileSize()) {
 					id = screen.getTile(screen.getWidth()-2, y).getBackground().getPictureId();
-					this.tileArea.drawTile(this.pxlWidth-getTileSize()+xOffset, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize()-xOffset, getTileSize());
+					//this.tileArea.drawTile(this.pxlWidth-getTileSize()+xOffset, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize()-xOffset, getTileSize());
 					// - - - this.tileArea.drawTile(id, this.pxlWidth-getTileSize()+xOffset, getTileSize()*y, getTileSize()-xOffset, getTileSize());
 				}
 			}			

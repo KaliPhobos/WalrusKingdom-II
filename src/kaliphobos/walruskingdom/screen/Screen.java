@@ -1,5 +1,7 @@
 package kaliphobos.walruskingdom.screen;
 
+import kaliphobos.walruskingdom.general.debug;
+
 /** The "virtual" screen which represents the currently visible section of the world map
  *  Meant to be used for temporary map overlays which are not to be stored to the map itself
  *  THIS ARRAY IS ACHITECTURALLY MESSED UP - ACCESS VIA ARRAY[Y][X]
@@ -22,7 +24,7 @@ public class Screen {
 		this.width = 8;
 		this.height = 6;
 		this.data = new MapTile[height*width];
-		System.out.println("Default Screen Object initialized");
+		debug.DebugLog("Default Screen Object initialized");
 	}
 	
 	/** Specialized constructor, allows setting the screen resolution (in tiles) */
@@ -30,7 +32,7 @@ public class Screen {
 		this.width = width;
 		this.height = height;
 		this.data = new MapTile[height*width];
-		System.out.println("Screen Object initialized as "+getHeight()+"x"+getWidth()+" (height x width)");
+		debug.DebugLog("Screen Object initialized as "+getHeight()+"x"+getWidth()+" (height x width)");
 	}
 	
 	/** Will return a single tile given it's coordinates or a blank one should there be a border issue */
@@ -40,7 +42,7 @@ public class Screen {
 		if (pos<0 || pos>=this.data.length) {
 			// return a solid black block, basically the supposedly never visible void
 			// WHY IS THIS NOT WORKING?
-			System.out.println("x:"+x+" y:"+y+" is off the map, going dark");
+			debug.DebugLog("x:"+x+" y:"+y+" is off the map, going dark");
 			return new MapTile(new Tile(0, 0, true), new Tile(0, 0, true));
 		} else {
 			return this.data[pos];
@@ -97,7 +99,7 @@ public class Screen {
 	public void walk(int x, int y) {
 		this.screenPosX+=x;
 		this.screenPosY+=y;
-		System.out.println("x:"+this.screenPosX+" y:"+this.screenPosY);
+		debug.DebugLog("x:"+this.screenPosX+" y:"+this.screenPosY);
 		update();
 	}
 }

@@ -37,10 +37,13 @@ public class debug {
 		return sb.toString();
 	}
 	
-	/** creates a debug output which also includes a timestamp as well as the time passed since the method's last call. */
-	public static void DebugLog(String message) {
-		long time = System.currentTimeMillis();
-		System.out.println((time-initialTimestamp)/1000.0 + "s (+" + (time-lastTimestamp)/1000.0 + "s)   " + message);
-		lastTimestamp = System.currentTimeMillis();
+	/** creates a debug output which also includes a timestamp as well as the time passed since the method's last call.
+	 * Supports any number of Strings which will then be handled separately. */
+	public static void DebugLog(String... message) {
+		for (String subMessage : message) {
+			long time = System.currentTimeMillis();
+			System.out.println((time-initialTimestamp)/1000.0 + "s (+" + (time-lastTimestamp)/1000.0 + "s)   " + subMessage);
+			lastTimestamp = System.currentTimeMillis();
+		}
 	}
 }

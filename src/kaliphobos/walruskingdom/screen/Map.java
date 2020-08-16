@@ -1,5 +1,7 @@
 package kaliphobos.walruskingdom.screen;
 
+import kaliphobos.walruskingdom.general.debug;
+
 /** Contains a one dimensional list of MapTile elements.
  * Each MapTile element is a combination of two Tile items for both fore- and background.
  * Since the data structure is one dimensional, you can access item[x][y] as item[x*this.width+y]
@@ -22,7 +24,7 @@ public class Map {
 				this.data[y*this.width+x] = new MapTile(new Tile(id, id, false), new Tile(id, id, false));
 			}
 		}
-		System.out.println("Map Object initialized as "+this.width+"x"+this.height);
+		debug.DebugLog("Map Object initialized as "+this.width+"x"+this.height);
 	}
 	
 	public Map(final int width, final int height) {
@@ -35,7 +37,7 @@ public class Map {
 				this.data[y*this.width+x] = new MapTile(new Tile(id, id, false), new Tile(id, id, false));
 			}
 		}
-		System.out.println("Map Object initialized as "+this.width+"x"+this.height);
+		debug.DebugLog("Map Object initialized as "+this.width+"x"+this.height);
 	}
 	
 	/** Will return the entire map's raw data as a MapTile[] */

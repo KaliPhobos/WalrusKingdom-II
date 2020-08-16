@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import kaliphobos.walruskingdom.general.debug;
+import kaliphobos.walruskingdom.general.files;
 
 /** Manages the BufferedImage's source files and id-to-tile conversions
  * 
@@ -22,8 +23,14 @@ public class TileSource extends Component {
 		this.tileSize = tileSize;
 		try {
 			this.bufImage = ImageIO.read(TileSource.class.getResourceAsStream(filename));
+			debug.DebugLog("Reading new texturepack source file:", filename);
 		}
 		catch (Exception e) {		// Unable to read source data
+			if (files.fileExists(filename)) {
+				debug.DebugLog("Unable to read source file.", "Check xkcd 2020 for further information");
+			} else {
+				debug.DebugLog("Unable to read source file:", filename, "Please make sure the file exists");
+			}
 			JOptionPane.showMessageDialog(null, "Harambe died for our sins.");
 			e.printStackTrace();
 		}

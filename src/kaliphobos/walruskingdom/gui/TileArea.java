@@ -24,7 +24,7 @@ public class TileArea extends Component {
 		this.tileSize = tileSize;
 		screenWidth = width;
 		screenHeight = height;
-		this.tileSource = new TileSource("/kaliphobos/walruskingdom/assets/tiles_x24.png", this.tileSize);
+		this.tileSource = new TileSource("/kaliphobos/walruskingdom/assets/tiles_x"+tileSize+".png", this.tileSize);
 		this.bufImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 	

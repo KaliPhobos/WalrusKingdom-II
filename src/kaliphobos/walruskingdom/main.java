@@ -15,21 +15,22 @@ public class main {
 
 	/** The game's main method. */
 	public static void main(String[] args) {
+		int resolution = 48;
 		debug.setInitialTimestamp(System.currentTimeMillis());
 		
 		Map townMap = new Map(100, 75);
 
-		window gui = new window();
+		window gui = new window(resolution);
 		gui.setTileWidth(16, false);		// game resolution
 		gui.setTileHeight(12, false);
-		gui.setTilesize(24, true);				// size of tiles used in the game (24px)
+		gui.setTilesize(resolution, true);				// size of tiles used in the game (24px)
 		
 		
 		// Increase screen size by 2 tiles to create a buffer which is necessary for smooth scrolling
 		Screen previewScreen = new Screen(gui.getTileWidth()+2, gui.getTileHeight()+2);
 		previewScreen.setMap(townMap);
 		
-		System.out.println(previewScreen.preview());
+		debug.DebugLog(previewScreen.preview());
 
 		
 		
@@ -39,7 +40,7 @@ public class main {
 		files.readJSON(jsonData);
 		*/
 		while (true) {
-			for (int xOffset=24; xOffset>0; xOffset--) {
+			for (int xOffset=48; xOffset>0; xOffset--) {
 				gui.pasteToScreen(previewScreen, xOffset, 0);
 				gui.refresh();
 				debug.DebugLog("FRAME");

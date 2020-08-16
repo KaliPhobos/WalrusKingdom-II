@@ -34,5 +34,10 @@ public class files {
 		}
 		return result;
 	}
+	
+	public static boolean fileExists(String path) {
+		File sourcefile = new File(path);
+		return sourcefile.exists();
+	}
 
 }
