@@ -1,5 +1,8 @@
 package dinosws.walruskingdom;
 
+import java.awt.Dimension;
+
+import dinosws.walruskingdom.visual.GameWindow;
 import kaliphobos.walruskingdom.general.debug;
 import kaliphobos.walruskingdom.gui.window;
 import kaliphobos.walruskingdom.screen.Map;
@@ -14,6 +17,10 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		oldMain();
+		//GameWindow window = new GameWindow("test", new Dimension(200, 200), null, false);
+		//window.show();
+		//window.next();
+		//window.draw();
 	}
 	
 	public static void oldMain() {
