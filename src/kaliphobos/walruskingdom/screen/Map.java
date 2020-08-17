@@ -21,7 +21,7 @@ public class Map {
 		for (int y=0; y<this.height; y++) {
 			for (int x=0; x<this.width; x++) {
 				int id = (y*this.width+x)%26;
-				this.data[y*this.width+x] = new MapTile(new Tile(id, id, false), new Tile(id, id, false));
+				this.data[y*this.width+x] = new MapTile(new Tile(id+10, id+10, false), new Tile(id+10, id+10, false));
 			}
 		}
 		debug.DebugLog("Map Object initialized as "+this.width+"x"+this.height);
@@ -34,7 +34,7 @@ public class Map {
 		for (int x=0; x<this.width-1; x++) {
 			for (int y=0; y<this.height-1; y++) {
 				int id = (y*this.width+x)%26;
-				this.data[y*this.width+x] = new MapTile(new Tile(id, id, false), new Tile(id, id, false));
+				this.data[y*this.width+x] = new MapTile(new Tile(id+10, id+10, false), new Tile(id+10, id+10, false));
 			}
 		}
 		debug.DebugLog("Map Object initialized as "+this.width+"x"+this.height);

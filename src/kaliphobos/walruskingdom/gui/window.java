@@ -207,10 +207,10 @@ public class window {
 	
 	public void pasteToScreen(Screen screen) {
 		refresh();
-		for (int y=1; y<screen.getHeight()-3; y++) {
-			for (int x=1; x<screen.getWidth()-3; x++) {
+		for (int y=1; y<this.tileHeight-1; y++) {
+			for (int x=1; x<this.tileWidth-1; x++) {
 				int id = screen.getTile(x, y).getBackground().getPictureId();
-				this.tileArea.drawTile(getTileSize()*x, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize(), getTileSize());
+				this.tileArea.drawTile(getTileSize()*x, getTileSize()*y, tileArea.getX(id), tileArea.getY(id), getTileSize(), getTileSize());
 				// this.tileArea.drawTile(id, getTileSize()*x, getTileSize()*y, getTileSize(), getTileSize());
 				refresh();
 			}
@@ -224,7 +224,7 @@ public class window {
 
 		// center tiles
 		for (y=1; y<screen.getHeight()-2; y++) {
-			for (x=1; x<screen.getWidth()-2; x++) {
+			for (x=1; x<this.tileWidth; x++) {
 				id = screen.getTile(x, y).getBackground().getPictureId();
 				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, getTileSize()*(y-1)+yOffset);
 			}
@@ -234,7 +234,7 @@ public class window {
 		y = 0;
 		if (yOffset != getTileSize()) {
 			// Render cut-off tiles only if offset does not equal tileSize
-			for (x=1; x<screen.getWidth()-2; x++) {
+			for (x=1; x<this.tileWidth; x++) {
 				if (yOffset != 0) {
 					// Tile height 0px if there is no offset
 					id = screen.getTile(x, y).getBackground().getPictureId();
@@ -243,7 +243,7 @@ public class window {
 			}
 		} else {
 			// Render bottom line as full tiles if offset equals tileSize (faster)
-			for (x=1; x<screen.getWidth()-2; x++) {
+			for (x=1; x<this.tileWidth; x++) {
 				id = screen.getTile(x, y).getBackground().getPictureId();
 				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, 0);
 			}
@@ -251,7 +251,7 @@ public class window {
 		
 		// top right tile
 		if (xOffset != 0 && yOffset != 0) {
-			x = this.tileWidth-1;
+			x = this.tileWidth;
 			y = 0;
 			id = screen.getTile(x, y).getBackground().getPictureId();
 			if (xOffset == getTileSize() && yOffset == getTileSize()) {
@@ -259,24 +259,24 @@ public class window {
 				this.tileArea.drawTile(id, getTileSize()*x, getTileSize()*y);
 			} else {
 				// SOMETHING IS WRONG HERE
-				this.tileArea.drawTile(getTileSize()*x+xOffset, 0, tileArea.getX(id)+getTileSize(), tileArea.getY(id)+getTileSize()-yOffset, xOffset, yOffset);
+				this.tileArea.drawTile(this.pxlWidth-this.tilesize+xOffset, 0, tileArea.getX(id), tileArea.getY(id)+getTileSize()-yOffset, this.tilesize-xOffset, yOffset);
 			}
 
 		}
 
 		// right tiles
+		x = this.tileWidth-1;
 		if (xOffset !=0) {
 			if (xOffset == getTileSize()) {
 				// Render right tiles as full tiles (faster)
-				for (y=1; y<screen.getHeight()-2; y++) {
+				for (y=0; y<this.tileHeight; y++) {
 					id = screen.getTile(x, y).getBackground().getPictureId();
 					this.tileArea.drawTile(id, this.pxlWidth-getTileSize(), getTileSize()*(y-1)+yOffset);
 				}
 			} else {
 				// Render cut-off partial tiles for right border
-				x = getTileWidth()-1;
-				for (y=1; y<screen.getHeight()-2; y++) {
-					id = screen.getTile(x-3, y).getBackground().getPictureId();
+				for (y=0; y<this.tileHeight; y++) {
+					id = screen.getTile(x+1, y+1).getBackground().getPictureId();
 					//id = 162;
 					this.tileArea.drawTile(getTileSize()*x+xOffset, getTileSize()*y+yOffset, tileArea.getX(id), tileArea.getY(id), getTileSize()-xOffset, getTileSize());
 					
@@ -286,6 +286,27 @@ public class window {
 			//this.tileArea.drawTile(getTileSize()*(x-1)+xOffset, 0, getX(id), getY(id)+getTileSize()-yOffset, getTileSize(), yOffset);
 		}
 
+		// bottom right tile
+		// ...
+		
+		// bottom tiles
+		y = getTileHeight();
+		if (yOffset != getTileSize()) {
+			// Render cut-off tiles only if offset does not equal tileSize
+			for (x=1; x<this.tileWidth; x++) {
+				if (yOffset != 0) {
+					// Tile height 0px if there is no offset
+					id = screen.getTile(x, y).getBackground().getPictureId();
+					this.tileArea.drawTile(getTileSize()*(x-1)+xOffset, this.pxlHeight-getTileSize()+yOffset, tileArea.getX(id), tileArea.getY(id), getTileSize(), getTileSize()-yOffset);
+				}
+			}
+		} else {
+			// Render bottom line as full tiles if offset equals tileSize (faster)
+			for (x=1; x<this.tileWidth; x++) {
+				id = screen.getTile(x, y-1).getBackground().getPictureId();
+				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, this.pxlHeight-getTileSize());
+			}
+		}
 		refresh();
 	}
 	

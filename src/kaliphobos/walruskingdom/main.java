@@ -37,16 +37,16 @@ public class main {
 		
 		while (true) {
 			
-			int xOffset = 12;
-			int yOffset = 12;
-			//for (yOffset=resolution; yOffset>=0; yOffset--) {
+			int xOffset = 24;
+			int yOffset = 24;
+			for (yOffset=resolution; yOffset>=0; yOffset--) {
 				xOffset = yOffset;
 				gui.pasteToScreen(previewScreen, xOffset, yOffset);
 				gui.refresh();
 				debug.DebugLog("FRAME");
-			//}
-			//previewScreen.walk(1, 1);
-			//gui.refresh();
+			}
+			previewScreen.walk(1, 1);
+			gui.refresh();
 		}
 		
 		
