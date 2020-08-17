@@ -218,25 +218,74 @@ public class window {
 	}
 	
 	public void pasteToScreen(Screen screen, int xOffset, int yOffset) {
-		if (xOffset!=0 && yOffset==0) {
-			// Horizontal scrolling only
-			for (int y=1; y<screen.getHeight()-3; y++) {
-				int id = screen.getTile(0, y).getBackground().getPictureId();
-				//this.tileArea.drawTile(0, getTileSize()*y, (id%10)*(getTileSize()+1)+getTileSize()-xOffset, ((id-(id%10))/10)*(getTileSize()+1), xOffset, getTileSize());
-				// - - - this.tileArea.drawTile(id, 0, getTileSize()*y, xOffset, getTileSize());
-				int x=1;
-				for (x=1; x<screen.getWidth()-2; x++) {
-					id = screen.getTile(x, y).getBackground().getPictureId();
-					// this.tileArea.drawTile(getTileSize()*x-getTileSize()+xOffset, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize(), getTileSize());
-					this.tileArea.drawTile(id, getTileSize()*x-getTileSize()+xOffset, getTileSize()*y);
-				}
-				if (xOffset<getTileSize()) {
-					id = screen.getTile(screen.getWidth()-2, y).getBackground().getPictureId();
-					//this.tileArea.drawTile(this.pxlWidth-getTileSize()+xOffset, getTileSize()*y, (id%10)*(getTileSize()+1), ((id-(id%10))/10)*(getTileSize()+1), getTileSize()-xOffset, getTileSize());
-					// - - - this.tileArea.drawTile(id, this.pxlWidth-getTileSize()+xOffset, getTileSize()*y, getTileSize()-xOffset, getTileSize());
-				}
-			}			
+		int id = 0;
+		int x = 0;
+		int y = 0;
+
+		// center tiles
+		for (y=1; y<screen.getHeight()-2; y++) {
+			for (x=1; x<screen.getWidth()-2; x++) {
+				id = screen.getTile(x, y).getBackground().getPictureId();
+				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, getTileSize()*(y-1)+yOffset);
+			}
 		}
+
+		// top tiles
+		y = 0;
+		if (yOffset != getTileSize()) {
+			// Render cut-off tiles only if offset does not equal tileSize
+			for (x=1; x<screen.getWidth()-2; x++) {
+				if (yOffset != 0) {
+					// Tile height 0px if there is no offset
+					id = screen.getTile(x, y).getBackground().getPictureId();
+					this.tileArea.drawTile(getTileSize()*(x-1)+xOffset, 0, tileArea.getX(id), tileArea.getY(id)+getTileSize()-yOffset, getTileSize(), yOffset);
+				}
+			}
+		} else {
+			// Render bottom line as full tiles if offset equals tileSize (faster)
+			for (x=1; x<screen.getWidth()-2; x++) {
+				id = screen.getTile(x, y).getBackground().getPictureId();
+				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, 0);
+			}
+		}
+		
+		// top right tile
+		if (xOffset != 0 && yOffset != 0) {
+			x = this.tileWidth-1;
+			y = 0;
+			id = screen.getTile(x, y).getBackground().getPictureId();
+			if (xOffset == getTileSize() && yOffset == getTileSize()) {
+				// Render top right tile as full tile if offsets equal tileSize (faster)
+				this.tileArea.drawTile(id, getTileSize()*x, getTileSize()*y);
+			} else {
+				// SOMETHING IS WRONG HERE
+				this.tileArea.drawTile(getTileSize()*x+xOffset, 0, tileArea.getX(id)+getTileSize(), tileArea.getY(id)+getTileSize()-yOffset, xOffset, yOffset);
+			}
+
+		}
+
+		// right tiles
+		if (xOffset !=0) {
+			if (xOffset == getTileSize()) {
+				// Render right tiles as full tiles (faster)
+				for (y=1; y<screen.getHeight()-2; y++) {
+					id = screen.getTile(x, y).getBackground().getPictureId();
+					this.tileArea.drawTile(id, this.pxlWidth-getTileSize(), getTileSize()*(y-1)+yOffset);
+				}
+			} else {
+				// Render cut-off partial tiles for right border
+				x = getTileWidth()-1;
+				for (y=1; y<screen.getHeight()-2; y++) {
+					id = screen.getTile(x-3, y).getBackground().getPictureId();
+					//id = 162;
+					this.tileArea.drawTile(getTileSize()*x+xOffset, getTileSize()*y+yOffset, tileArea.getX(id), tileArea.getY(id), getTileSize()-xOffset, getTileSize());
+					
+				}
+			}
+			id = screen.getTile(x, y).getBackground().getPictureId();
+			//this.tileArea.drawTile(getTileSize()*(x-1)+xOffset, 0, getX(id), getY(id)+getTileSize()-yOffset, getTileSize(), yOffset);
+		}
+
 		refresh();
 	}
 	

@@ -31,7 +31,7 @@ public class TileArea extends Component {
 	public void initialize(int numOfTiles) {
 		this.tiles = new BufferedImage[numOfTiles];
 		for (int count=0; count<tileSize; count++) {
-			this.tiles[count] = this.tileSource.getTile((count%10)*(tileSize+1), ((count-(count%10))/10)*(tileSize+1), tileSize, tileSize);
+			this.tiles[count] = this.tileSource.getTile(getX(count), getY(count), tileSize, tileSize);
 		}
 	}
 	
@@ -50,10 +50,9 @@ public class TileArea extends Component {
 	
 	/** Copies an area of the tile source to the screen.
 	 * 
+	 * @param id The current tile id
 	 * @param screenx On-Screen X position
 	 * @param screeny On-Screen Y position
-	 * @param tilex Source image x position
-	 * @param tiley Source image y position
 	 */
 	public void drawTile(int id, int screenx, int screeny) {
 		Graphics2D g = this.bufImage.createGraphics();
@@ -73,5 +72,13 @@ public class TileArea extends Component {
 		Graphics2D g = this.bufImage.createGraphics();
 		g.drawImage(this.tileSource.getTile(tilex, tiley, tilewidth, tileheight), screenx, screeny, tilewidth, tileheight, null);
 		g.drawImage(this.bufImage, 0, 0, null);
+	}
+	
+	public int getX(int id) {
+		return (id%10)*(tileSize+(tileSize/24))+(tileSize/24);
+	}
+	
+	public int getY(int id) {
+		return ((id-(id%10))/10)*(tileSize+(tileSize/24))+(tileSize/24);
 	}
 }

@@ -33,19 +33,20 @@ public class main {
 		debug.DebugLog(previewScreen.preview());
 
 		
+
 		
-		/*
-		String jsonData = files.ReadFromFile("/kaliphobos/walruskingdom/assets/Maps.json");
-		System.out.println(jsonData);
-		files.readJSON(jsonData);
-		*/
 		while (true) {
-			for (int xOffset=48; xOffset>0; xOffset--) {
-				gui.pasteToScreen(previewScreen, xOffset, 0);
+			
+			int xOffset = 12;
+			int yOffset = 12;
+			//for (yOffset=resolution; yOffset>=0; yOffset--) {
+				xOffset = yOffset;
+				gui.pasteToScreen(previewScreen, xOffset, yOffset);
 				gui.refresh();
 				debug.DebugLog("FRAME");
-			}
-			previewScreen.walk(1, 0);
+			//}
+			//previewScreen.walk(1, 1);
+			//gui.refresh();
 		}
 		
 		
