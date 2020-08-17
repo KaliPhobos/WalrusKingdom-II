@@ -186,7 +186,7 @@ public class window {
 			// close old window so a new one can be opened
 		}
 		createWindow();
-		tileArea.initialize(200);
+		tileArea.initialize(250);
 		// force full redraw
 	}
 	
@@ -202,28 +202,30 @@ public class window {
 		frame.add("Center", this.tileArea);
 		frame.pack();
 		frame.setVisible(true);
-	    this.frame = frame;
+		this.frame = frame;
 	}
 	
 	public void pasteToScreen(Screen screen) {
-		refresh();
 		for (int y=1; y<this.tileHeight-1; y++) {
 			for (int x=1; x<this.tileWidth-1; x++) {
 				int id = screen.getTile(x, y).getBackground().getPictureId();
 				this.tileArea.drawTile(getTileSize()*x, getTileSize()*y, tileArea.getX(id), tileArea.getY(id), getTileSize(), getTileSize());
 				// this.tileArea.drawTile(id, getTileSize()*x, getTileSize()*y, getTileSize(), getTileSize());
-				refresh();
 			}
 		}
+		
 	}
 	
+	// legacy code: USed to simply paste the current buffer content on the screen, no scrolling allowed at this point.
+	// will later be used for direct graphics output like "animations"
 	public void pasteToScreen(Screen screen, int xOffset, int yOffset) {
+		assert xOffset >= 0 && xOffset < getTileSize() && yOffset >= 0 && yOffset < getTileSize();
 		int id = 0;
 		int x = 0;
 		int y = 0;
 
 		// center tiles
-		for (y=1; y<screen.getHeight()-2; y++) {
+		for (y=1; y<this.tileHeight; y++) {
 			for (x=1; x<this.tileWidth; x++) {
 				id = screen.getTile(x, y).getBackground().getPictureId();
 				this.tileArea.drawTile(id, getTileSize()*(x-1)+xOffset, getTileSize()*(y-1)+yOffset);
@@ -287,7 +289,8 @@ public class window {
 		}
 
 		// bottom right tile
-		// ...
+		// I actually never intended this to happen, but somehow "right tiles" also takes care of the bottom right tile without throwing an error
+		// Clearly this is not a bug but an excellent feature
 		
 		// bottom tiles
 		y = getTileHeight();

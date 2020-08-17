@@ -37,8 +37,8 @@ public class main {
 		
 		while (true) {
 			
-			int xOffset = 24;
-			int yOffset = 24;
+			int xOffset = resolution/2;
+			int yOffset = resolution/2;
 			for (yOffset=resolution; yOffset>=0; yOffset--) {
 				xOffset = yOffset;
 				gui.pasteToScreen(previewScreen, xOffset, yOffset);
