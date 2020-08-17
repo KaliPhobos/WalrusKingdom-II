@@ -91,6 +91,9 @@ public class GameWindow {
 		// Handle the close operation
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// Avoid draw events caused by the OS to keep the framerate stable
+		window.setIgnoreRepaint(true);
+		
 		// Set the engine and register the events
 		setEngine(engine);
 		
