@@ -3,6 +3,8 @@ package dinosws.walruskingdom.visual;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -13,6 +15,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import dinosws.walruskingdom.engine.GameEngine;
 
@@ -20,6 +23,12 @@ import dinosws.walruskingdom.engine.GameEngine;
 public class GameWindow {
 	/** The Java window. */
 	private final JFrame window;
+	
+	/** The drawing canvas. */
+	private final JPanel canvas;
+	
+	/** The rendering timer. */
+	private final Timer timer;
 	
 	/** Whether the window is in full screen mode. */
 	private final boolean fullScreen;
@@ -39,11 +48,17 @@ public class GameWindow {
 	/** Whether to display statistics in the title. */
 	private boolean displayStats;
 	
+	/** The timestamp of the beginning of the previous update. */
+	private long lastUpdateTimestamp;
+	
 	/** The creation timestamp of the last rendered frame. */
 	private long lastFrameTimestamp;
 	
 	/** The duration in milliseconds, that the last frame rendered for. */
 	private int lastFrameDuration;
+	
+	/** The interval between engine updates. */
+	private int updateInterval = 40;
 	
 	/** The constructor. */
 	public GameWindow(GameEngine engine, Dimension initialSize, Dimension minimumSize, boolean fullScreen) {
@@ -61,17 +76,14 @@ public class GameWindow {
 		// Create the new window
 		window = new JFrame();
 		
-		// Initialize the display stats field and last frame timestamp
+		// Initialize the display stats field and the timestamps
 		displayStats = false;
-		lastFrameTimestamp = System.currentTimeMillis();
+		lastUpdateTimestamp = 0;
+		lastFrameTimestamp = 0;
 		
 		// Configure the window
 		if (minimumSize != null)
 			window.setMinimumSize(minimumSize);
-		
-		// Set the initial size
-		window.setPreferredSize(initialSize);
-		window.setSize(initialSize);
 		
 		// Update the background color
 		window.setBackground(backgroundColor);
@@ -103,20 +115,16 @@ public class GameWindow {
 			@Override
 			public void windowOpened(WindowEvent e) {
 				// Start the rendering
+				window.pack();
 				start();
 			}
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// Stop the rendering and de-register the events
+				// Stop the rendering, de-register the events and shut-down the engine
 				stop();
 				removeEngineEvents();
-			}
-			
-			@Override
-			public void windowClosed(WindowEvent e) {
-				// Shut-down the engine
-				engine.onDisable();
+				engine.onDisable(GameWindow.this);
 			}
 
 			@Override
@@ -142,24 +150,51 @@ public class GameWindow {
 				// Stop the rendering
 				stop();
 			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) { }
 		});
 		
 		// Set up the draw area
-		window.setContentPane(new JPanel() {
+		canvas = new JPanel() {
 			private static final long serialVersionUID = 1L;
+			@Override
 			public void paintComponent(Graphics graphics) {
-				if (frame != null)
-					graphics.drawImage(frame, 0, 0, backgroundColor, null);
+				// Only render, if the frame is not null
+				if (frame == null)
+					return;
+				
+				// Draw the image
+				graphics.drawImage(frame, 0, 0, null);
+			}
+		};
+		canvas.setPreferredSize(initialSize);
+		canvas.setSize(initialSize);
+		window.setContentPane(canvas);
+		
+		// Finally, set up the timer
+		timer = new Timer(updateInterval, null);
+		timer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Get the current timestamp
+				long currentTimestamp = System.currentTimeMillis();
+				
+				// Update the game logic
+				engine.onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
+				
+				// Update the last update timestamp
+				lastUpdateTimestamp = currentTimestamp;
 			}
 		});
 	}
 	
-	/** Returns the title of the game. */
+	/** Gets the title of the game. */
 	public String getGameTitle() {
 		return engine.getTitle();
 	}
 	
-	/** Returns the current title string that the window would be displaying now. */
+	/** Gets the current title string that the window would be displaying now. */
 	public String getTitle() {
 		return window.getTitle();
 	}
@@ -205,24 +240,45 @@ public class GameWindow {
 		return displayStats;
 	}
 	
-	/** Gets the width of the window. */
-	public int getWidth() {
+	/** Gets whether the engine is currently running. */
+	public boolean isRunning() {
+		return timer.isRunning();
+	}
+	
+	/** Gets the width of the . */
+	public int getWindowWidth() {
 		return window.getWidth();
 	}
 	
 	/** Gets the height of the window. */
-	public int getHeight() {
+	public int getWindowHeight() {
 		return window.getHeight();
 	}
 	
-	/** Returns the duration of the previous frame in milliseconds. */
+	/** Gets the width of the buffer. */
+	public int getWidth() {
+		return frame != null ? frame.getWidth() : 0;
+	}
+	
+	/** Gets the height of the buffer. */
+	public int getHeight() {
+		return frame != null ? frame.getHeight() : 0;
+	}
+	
+	/** Gets the duration of the previous frame in milliseconds. */
 	public int getFrameDuration() {
 		return Math.max(lastFrameDuration, 0);
 	}
 	
-	/** Returns the current framerate. */
+	/** Gets the current framerate. */
 	public int getFrameRate() {
 		return 1000 / Math.max(lastFrameDuration, 1);
+	}
+	
+	/** Returns the current update interval in milliseconds. */
+	public int getUpdateInterval()
+	{
+		return updateInterval;
 	}
 	
 	/** Sets the currently active game engine. */
@@ -232,12 +288,12 @@ public class GameWindow {
 			throw new IllegalArgumentException("The engine may not be null.");
 		
 		// Handle any existing engine
-		if (engine != null) {
+		if (this.engine != null) {
 			// Remove the events
 			removeEngineEvents();
 			
 			// Disable the engine
-			engine.onDisable();
+			engine.onDisable(this);
 		}
 		
 		// Copy the new engine
@@ -247,12 +303,11 @@ public class GameWindow {
 		addEngineEvents();
 		
 		// Enable the engine
-		engine.onEnable();
+		engine.onEnable(this);
 	}
 	
 	/** Adds all engine events. */
-	private void addEngineEvents()
-	{
+	private void addEngineEvents() {
 		// Add the key events
 		if (engine instanceof KeyListener)
 			window.addKeyListener((KeyListener)engine);
@@ -266,8 +321,7 @@ public class GameWindow {
 	}
 	
 	/** Removes all engine events. */
-	private void removeEngineEvents()
-	{
+	private void removeEngineEvents() {
 		// Remove the key events
 		if (engine instanceof KeyListener)
 			window.removeKeyListener((KeyListener)engine);
@@ -283,6 +337,17 @@ public class GameWindow {
 	/** Sets whether the window is displaying stats. */
 	public void setDisplayingStats(boolean state) {
 		displayStats = state;
+	}
+	
+	/** Sets the update interval in milliseconds. */
+	public void setUpdateInterval(int interval) {
+		// Sanity check the interval
+		if (interval < 1)
+			return;
+		
+		// Update the interval
+		updateInterval = interval;
+		timer.setDelay(interval);
 	}
 	
 	/** Shows the window. */
@@ -301,7 +366,7 @@ public class GameWindow {
 		lastFrameTimestamp = System.currentTimeMillis();
 		
 		// Fetch the dimensions of the window
-		final int width = getWidth(), height = getHeight();
+		final int width = canvas.getWidth(), height = canvas.getHeight();
 		
 		// Dispose of any previous frame
 		if (frameGraphics != null)
@@ -326,11 +391,37 @@ public class GameWindow {
 		return frame;
 	}
 	
+	/** Starts the regular engine updates. */
 	public void start() {
+		// Only do something if currently not running
+		if (isRunning())
+			return;
 		
+		// Get the current timestamp
+		long currentTimestamp = System.currentTimeMillis();
+		
+		// Change the timestamps to absolute ones (so that they resume counting)
+		lastUpdateTimestamp += currentTimestamp;
+		lastFrameTimestamp += currentTimestamp;
+		
+		// Start the timer
+		timer.start();
 	}
 	
+	/** Stops the regular engine updates. */
 	public void stop() {
+		// Only do something if currently running
+		if (!isRunning())
+			return;
 		
+		// Get the current timestamp
+		long currentTimestamp = System.currentTimeMillis();
+		
+		// Change the timestamps to relative ones (so that they stop counting)
+		lastUpdateTimestamp -= currentTimestamp;
+		lastFrameTimestamp -= currentTimestamp;
+		
+		// Stop the timer
+		timer.stop();
 	}
 }

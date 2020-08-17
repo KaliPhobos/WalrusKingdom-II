@@ -2,6 +2,7 @@ package dinosws.walruskingdom;
 
 import java.awt.Dimension;
 
+import dinosws.walruskingdom.engine.TestEngine;
 import dinosws.walruskingdom.visual.GameWindow;
 import kaliphobos.walruskingdom.general.debug;
 import kaliphobos.walruskingdom.gui.window;
@@ -16,11 +17,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		oldMain();
-		//GameWindow window = new GameWindow("test", new Dimension(200, 200), null, false);
-		//window.show();
-		//window.next();
-		//window.draw();
+		//oldMain();
+		TestEngine engine = new TestEngine();
+		GameWindow window = new GameWindow(engine, new Dimension(300, 300), null, false);
+		window.show();
 	}
 	
 	public static void oldMain() {
