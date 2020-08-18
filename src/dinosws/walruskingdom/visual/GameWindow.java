@@ -317,6 +317,46 @@ public class GameWindow {
 		return window.getHeight();
 	}
 	
+	/** Gets the current width of the canvas. */
+	public int getCanvasWidth() {
+		// Get the width
+		int width = canvas.getWidth();
+		
+		// Check, if the width is already valid
+		if (width > 0)
+			return width;
+		
+		// Otherwise, try to fetch the preferred size
+		width = canvas.getPreferredSize().width;
+		
+		// Check, if the width is now valid
+		if (width > 0)
+			return width;
+		
+		// Otherwise, return a dummy value
+		return 1;
+	}
+	
+	/** Gets the current height of the canvas. */
+	public int getCanvasHeight() {
+		// Get the height
+		int height = canvas.getHeight();
+		
+		// Check, if the height is already valid
+		if (height > 0)
+			return height;
+		
+		// Otherwise, try to fetch the preferred size
+		height = canvas.getPreferredSize().height;
+		
+		// Check, if the height is now valid
+		if (height > 0)
+			return height;
+		
+		// Otherwise, return a dummy value
+		return 1;
+	}
+	
 	/** Gets the width of the buffer. */
 	public int getWidth() {
 		return getFrame() != null ? getFrame().getWidth() : 0;
@@ -373,7 +413,7 @@ public class GameWindow {
 		screenStack.push(screen);
 		
 		// Also create and push a new frame
-		frameStack.push(new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB));
+		frameStack.push(new BufferedImage(getCanvasWidth(), getCanvasHeight(), BufferedImage.TYPE_INT_RGB));
 		frameCurrent = getFrame();
 		
 		// Update the graphics
@@ -491,7 +531,7 @@ public class GameWindow {
 		frameGraphics.dispose();
 		
 		// Create the new image
-		BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(getCanvasWidth(), getCanvasHeight(), BufferedImage.TYPE_INT_RGB);
 		
 		// Pop the old and push the new
 		frameStack.pop();
