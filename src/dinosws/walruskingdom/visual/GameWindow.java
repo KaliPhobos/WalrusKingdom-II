@@ -12,6 +12,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -36,8 +37,8 @@ public class GameWindow {
 	/** The background color of the window. */
 	private final Color backgroundColor = new Color(0, 0, 0);
 	
-	/** The game screen. */
-	private GameScreen screen;
+	/** The game screen stack. */
+	private final Stack<GameScreen> screenStack;
 	
 	/** The currently rendering frame. */
 	private BufferedImage frame;
@@ -94,8 +95,9 @@ public class GameWindow {
 		// Avoid draw events caused by the OS to keep the framerate stable
 		window.setIgnoreRepaint(true);
 		
-		// Set the screen and register the events
-		setScreen(screen);
+		// Initialize the screen stack and push the new screen and register its events
+		screenStack = new Stack<GameScreen>();
+		pushScreen(screen);
 		
 		// Update the title
 		updateTitle();
@@ -124,12 +126,20 @@ public class GameWindow {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// Stop the rendering, de-register the events and shut-down the screen
+				// Stop the rendering, de-register the events and shut-down the screens
 				stop();
-				removeScreenEvents();
-				screen.onDisable(GameWindow.this);
+				while (!screenStack.isEmpty()) {
+					// Get the next screen
+					GameScreen screen = screenStack.pop();
+		
+					// Remove the events
+					removeScreenEvents(screen);
+		
+					// Disable the screen
+					screen.onDisable(GameWindow.this);
+				}
 			}
-
+			
 			@Override
 			public void windowIconified(WindowEvent e) {
 				// Stop the rendering
@@ -194,7 +204,7 @@ public class GameWindow {
 	
 	/** Gets the title of the game screen. */
 	public String getGameTitle() {
-		return screen.getTitle();
+		return getScreen().getTitle();
 	}
 	
 	/** Gets the current title string that the window would be displaying now. */
@@ -230,7 +240,7 @@ public class GameWindow {
 	
 	/** Gets the currently active game screen. */
 	public GameScreen getScreen() {
-		return screen;
+		return screenStack.empty() ? null : screenStack.peek();
 	}
 	
 	/** Gets whether the window is in full screen mode. */
@@ -284,33 +294,62 @@ public class GameWindow {
 		return updateInterval;
 	}
 	
-	/** Sets the currently active game screen. */
-	public void setScreen(GameScreen screen) {
+	/** Sets the currently active game screen by pushing it on top of the screen stack. */
+	public void pushScreen(GameScreen screen) {
 		// Sanity check the screen
 		if (screen == null)
 			throw new IllegalArgumentException("The screen may not be null.");
 		
 		// Handle any existing screen
-		if (this.screen != null) {
+		GameScreen previousScreen = getScreen();
+		if (previousScreen != null) {
 			// Remove the events
-			removeScreenEvents();
+			removeScreenEvents(previousScreen);
 			
 			// Disable the screen
-			screen.onDisable(this);
+			previousScreen.onDisable(this);
 		}
 		
-		// Copy the new screen
-		this.screen = screen;
-		
-		// Register the new events
-		addScreenEvents();
+		// Push the new screen
+		screenStack.push(screen);
 		
 		// Enable the screen
 		screen.onEnable(this);
+		
+		// And register the new events
+		addScreenEvents(screen);
+	}
+	
+	/** Pops the current screen from the screen stack. */
+	public void popScreen() {
+		// Make sure there are at least two screens on the stack
+		if (screenStack.size() < 2)
+			return;
+		
+		// Get the current screen
+		GameScreen screen = getScreen();
+		
+		// Remove the events
+		removeScreenEvents(screen);
+		
+		// Disable the screen
+		screen.onDisable(this);
+		
+		// Drop the current screen
+		screenStack.pop();
+		
+		// Fetch the next screen
+		screen = getScreen();
+		
+		// Enable it
+		screen.onEnable(this);
+		
+		// And register its events
+		addScreenEvents(screen);
 	}
 	
 	/** Adds all screen events. */
-	private void addScreenEvents() {
+	private void addScreenEvents(GameScreen screen) {
 		// Add the key events
 		if (screen instanceof KeyListener)
 			window.addKeyListener((KeyListener)screen);
@@ -324,7 +363,7 @@ public class GameWindow {
 	}
 	
 	/** Removes all screen events. */
-	private void removeScreenEvents() {
+	private void removeScreenEvents(GameScreen screen) {
 		// Remove the key events
 		if (screen instanceof KeyListener)
 			window.removeKeyListener((KeyListener)screen);
