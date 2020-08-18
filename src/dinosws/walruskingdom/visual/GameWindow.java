@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import dinosws.walruskingdom.engine.GameEngine;
+import dinosws.walruskingdom.engine.GameScreen;
 
 /** Class representing the game window GUI. */
 public class GameWindow {
@@ -36,8 +36,8 @@ public class GameWindow {
 	/** The background color of the window. */
 	private final Color backgroundColor = new Color(0, 0, 0);
 	
-	/** The game engine. */
-	private GameEngine engine;
+	/** The game screen. */
+	private GameScreen screen;
 	
 	/** The currently rendering frame. */
 	private BufferedImage frame;
@@ -57,18 +57,18 @@ public class GameWindow {
 	/** The duration in milliseconds, that the last frame rendered for. */
 	private int lastFrameDuration;
 	
-	/** The interval between engine updates. */
+	/** The interval between screen updates. */
 	private int updateInterval = 40;
 	
 	/** The constructor. */
-	public GameWindow(GameEngine engine, Dimension initialSize, Dimension minimumSize, boolean fullScreen) {
+	public GameWindow(GameScreen screen, Dimension initialSize, Dimension minimumSize, boolean fullScreen) {
 		// Sanity check the sizes
 		if (initialSize == null || initialSize.width < 1 || initialSize.height < 1)
 			throw new IllegalArgumentException("One of the sizes is invalid.");
 		
-		// Sanity check the engine
-		if (engine == null)
-			throw new IllegalArgumentException("The engine may not be null.");
+		// Sanity check the screen
+		if (screen == null)
+			throw new IllegalArgumentException("The screen may not be null.");
 		
 		// Copy the full screen flag
 		this.fullScreen = fullScreen;
@@ -94,8 +94,8 @@ public class GameWindow {
 		// Avoid draw events caused by the OS to keep the framerate stable
 		window.setIgnoreRepaint(true);
 		
-		// Set the engine and register the events
-		setEngine(engine);
+		// Set the screen and register the events
+		setScreen(screen);
 		
 		// Update the title
 		updateTitle();
@@ -124,10 +124,10 @@ public class GameWindow {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// Stop the rendering, de-register the events and shut-down the engine
+				// Stop the rendering, de-register the events and shut-down the screen
 				stop();
-				removeEngineEvents();
-				engine.onDisable(GameWindow.this);
+				removeScreenEvents();
+				screen.onDisable(GameWindow.this);
 			}
 
 			@Override
@@ -184,7 +184,7 @@ public class GameWindow {
 				long currentTimestamp = System.currentTimeMillis();
 				
 				// Update the game logic
-				engine.onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
+				screen.onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
 				
 				// Update the last update timestamp
 				lastUpdateTimestamp = currentTimestamp;
@@ -192,9 +192,9 @@ public class GameWindow {
 		});
 	}
 	
-	/** Gets the title of the game. */
+	/** Gets the title of the game screen. */
 	public String getGameTitle() {
-		return engine.getTitle();
+		return screen.getTitle();
 	}
 	
 	/** Gets the current title string that the window would be displaying now. */
@@ -228,9 +228,9 @@ public class GameWindow {
 		return newTitle;
 	}
 	
-	/** Gets the currently active game engine. */
-	public GameEngine getEngine() {
-		return engine;
+	/** Gets the currently active game screen. */
+	public GameScreen getScreen() {
+		return screen;
 	}
 	
 	/** Gets whether the window is in full screen mode. */
@@ -243,7 +243,7 @@ public class GameWindow {
 		return displayStats;
 	}
 	
-	/** Gets whether the engine is currently running. */
+	/** Gets whether the screen is currently running. */
 	public boolean isRunning() {
 		return timer.isRunning();
 	}
@@ -284,57 +284,57 @@ public class GameWindow {
 		return updateInterval;
 	}
 	
-	/** Sets the currently active game engine. */
-	public void setEngine(GameEngine engine) {
-		// Sanity check the engine
-		if (engine == null)
-			throw new IllegalArgumentException("The engine may not be null.");
+	/** Sets the currently active game screen. */
+	public void setScreen(GameScreen screen) {
+		// Sanity check the screen
+		if (screen == null)
+			throw new IllegalArgumentException("The screen may not be null.");
 		
-		// Handle any existing engine
-		if (this.engine != null) {
+		// Handle any existing screen
+		if (this.screen != null) {
 			// Remove the events
-			removeEngineEvents();
+			removeScreenEvents();
 			
-			// Disable the engine
-			engine.onDisable(this);
+			// Disable the screen
+			screen.onDisable(this);
 		}
 		
-		// Copy the new engine
-		this.engine = engine;
+		// Copy the new screen
+		this.screen = screen;
 		
 		// Register the new events
-		addEngineEvents();
+		addScreenEvents();
 		
-		// Enable the engine
-		engine.onEnable(this);
+		// Enable the screen
+		screen.onEnable(this);
 	}
 	
-	/** Adds all engine events. */
-	private void addEngineEvents() {
+	/** Adds all screen events. */
+	private void addScreenEvents() {
 		// Add the key events
-		if (engine instanceof KeyListener)
-			window.addKeyListener((KeyListener)engine);
+		if (screen instanceof KeyListener)
+			window.addKeyListener((KeyListener)screen);
 		// Add the mouse events
-		if (engine instanceof MouseListener)
-			window.addMouseListener((MouseListener)engine);
-		if (engine instanceof MouseMotionListener)
-			window.addMouseMotionListener((MouseMotionListener)engine);
-		if (engine instanceof MouseWheelListener)
-			window.addMouseWheelListener((MouseWheelListener)engine);
+		if (screen instanceof MouseListener)
+			window.addMouseListener((MouseListener)screen);
+		if (screen instanceof MouseMotionListener)
+			window.addMouseMotionListener((MouseMotionListener)screen);
+		if (screen instanceof MouseWheelListener)
+			window.addMouseWheelListener((MouseWheelListener)screen);
 	}
 	
-	/** Removes all engine events. */
-	private void removeEngineEvents() {
+	/** Removes all screen events. */
+	private void removeScreenEvents() {
 		// Remove the key events
-		if (engine instanceof KeyListener)
-			window.removeKeyListener((KeyListener)engine);
+		if (screen instanceof KeyListener)
+			window.removeKeyListener((KeyListener)screen);
 		// Remove the mouse events
-		if (engine instanceof MouseListener)
-			window.removeMouseListener((MouseListener)engine);
-		if (engine instanceof MouseMotionListener)
-			window.removeMouseMotionListener((MouseMotionListener)engine);
-		if (engine instanceof MouseWheelListener)
-			window.removeMouseWheelListener((MouseWheelListener)engine);
+		if (screen instanceof MouseListener)
+			window.removeMouseListener((MouseListener)screen);
+		if (screen instanceof MouseMotionListener)
+			window.removeMouseMotionListener((MouseMotionListener)screen);
+		if (screen instanceof MouseWheelListener)
+			window.removeMouseWheelListener((MouseWheelListener)screen);
 	}
 	
 	/** Sets whether the window is displaying stats. */
@@ -394,7 +394,7 @@ public class GameWindow {
 		return frame;
 	}
 	
-	/** Starts the regular engine updates. */
+	/** Starts the regular screen updates. */
 	public void start() {
 		// Only do something if currently not running
 		if (isRunning())
@@ -411,7 +411,7 @@ public class GameWindow {
 		timer.start();
 	}
 	
-	/** Stops the regular engine updates. */
+	/** Stops the regular screen updates. */
 	public void stop() {
 		// Only do something if currently running
 		if (!isRunning())

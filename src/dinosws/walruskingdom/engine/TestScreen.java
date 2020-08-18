@@ -6,10 +6,10 @@ import java.awt.Graphics;
 
 import dinosws.walruskingdom.visual.GameWindow;
 
-public class TestEngine implements GameEngine {
+public class TestScreen implements GameScreen {
 	final Font font;
 	
-	public TestEngine() {
+	public TestScreen() {
 		// TODO Auto-generated constructor stub
 		font = new Font("Times New Romans", Font.BOLD, 24);
 	}
