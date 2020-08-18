@@ -455,13 +455,15 @@ public class GameWindow {
 		timer.setDelay(interval);
 	}
 	
-	/** Shows the window. */
+	/** Shows the window and starts the rendering. */
 	public void show() {
+		start();
 		window.setVisible(true);
 	}
 	
-	/** Hides the window. */
+	/** Hides the window and stops the rendering. */
 	public void hide() {
+		stop();
 		window.setVisible(false);
 	}
 	
@@ -511,7 +513,7 @@ public class GameWindow {
 	}
 	
 	/** Starts the regular screen updates. */
-	public void start() {
+	private void start() {
 		// Only do something if currently not running
 		if (isRunning())
 			return;
@@ -528,7 +530,7 @@ public class GameWindow {
 	}
 	
 	/** Stops the regular screen updates. */
-	public void stop() {
+	private void stop() {
 		// Only do something if currently running
 		if (!isRunning())
 			return;
