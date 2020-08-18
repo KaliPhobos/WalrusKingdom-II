@@ -9,6 +9,9 @@ import dinosws.walruskingdom.visual.GameWindow;
 public class TestScreen implements GameScreen {
 	final Font font;
 	
+	int deltaSum = 0;
+	int overlayCount = 0;
+	
 	public TestScreen() {
 		// TODO Auto-generated constructor stub
 		font = new Font("Times New Romans", Font.BOLD, 24);
@@ -28,10 +31,24 @@ public class TestScreen implements GameScreen {
 	public void onUpdate(GameWindow window, int delta) {
 		System.out.println("Update!");
 		Graphics g = window.next(false);
-		g.setColor(new Color(255, 255, 255));
+		g.setColor(new Color(0, 255, 0));
 		g.setFont(font);
-		g.drawString(String.format("Delta: %d", delta), 1, 20);
+		g.drawString(String.format("Delta: %d", delta), 1, 120);
 		window.draw();
+		
+		deltaSum += delta;
+		
+		if (deltaSum < 2000)
+			return;
+		deltaSum = 0;
+		
+		if (overlayCount >= 2) {
+			window.pushScreen(new NotificationScreen(null, null));
+			overlayCount = 0;
+			return;
+		}
+		overlayCount++;
+		
 		window.pushScreen(new OverlayScreen());
 	}
 
