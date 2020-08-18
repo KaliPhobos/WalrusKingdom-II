@@ -443,7 +443,8 @@ public class GameWindow {
 		
 		// Draw the previous frame if desired and possible
 		if (overlay && frameStack.size() > 1)
-			frameGraphics.drawImage(frameStack.get(frameStack.size() - 2), 0, 0, null);
+			frameGraphics.drawImage(frameStack.get(frameStack.size() - 2), 0, 0,
+					image.getWidth(), image.getHeight(), null);
 		
 		// Return the graphics
 		return frameGraphics;
