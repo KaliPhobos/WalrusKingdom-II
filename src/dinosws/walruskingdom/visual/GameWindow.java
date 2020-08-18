@@ -62,10 +62,13 @@ public class GameWindow {
 	/** The timestamp of the beginning of the previous update. */
 	private long lastUpdateTimestamp;
 	
+	/** The duration in milliseconds, between the previous updates. */
+	private int lastUpdateDuration;
+	
 	/** The creation timestamp of the last rendered frame. */
 	private long lastFrameTimestamp;
 	
-	/** The duration in milliseconds, that the last frame rendered for. */
+	/** The duration in milliseconds, between the previous frame renders. */
 	private int lastFrameDuration;
 	
 	/** The interval between screen updates. */
@@ -93,6 +96,8 @@ public class GameWindow {
 		displayStats = false;
 		lastUpdateTimestamp = 0;
 		lastFrameTimestamp = 0;
+		lastUpdateDuration = 0;
+		lastFrameDuration = 0;
 		
 		// Configure the window
 		if (minimumSize != null)
@@ -203,8 +208,11 @@ public class GameWindow {
 				// Get the current timestamp
 				long currentTimestamp = System.currentTimeMillis();
 				
+				// Calculate the last update duration
+				lastUpdateDuration = (int)(currentTimestamp - lastUpdateTimestamp);
+				
 				// Update the game logic
-				getScreen().onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
+				getScreen().onUpdate(GameWindow.this, lastUpdateDuration);
 				
 				// Update the title
 				updateTitle();
@@ -257,7 +265,7 @@ public class GameWindow {
 		
 		// Check, if additional statistics are printed
 		if (displayStats)
-			titleBuffer.append(String.format(" (%d fps)", getFrameRate()));
+			titleBuffer.append(String.format(" (%d f/s, %d u/s)", getFrameRate(), getUpdateRate()));
 		
 		// Compile the title
 		final String newTitle = titleBuffer.toString();
@@ -319,7 +327,7 @@ public class GameWindow {
 		return getFrame() != null ? getFrame().getHeight() : 0;
 	}
 	
-	/** Gets the duration of the previous frame in milliseconds. */
+	/** Gets the duration between the previous frames in milliseconds. */
 	public int getFrameDuration() {
 		return Math.max(lastFrameDuration, 0);
 	}
@@ -327,6 +335,16 @@ public class GameWindow {
 	/** Gets the current framerate. */
 	public int getFrameRate() {
 		return 1000 / Math.max(lastFrameDuration, 1);
+	}
+	
+	/** Gets the duration between the previous updates in milliseconds. */
+	public int getUpdateDuration() {
+		return Math.max(lastUpdateDuration, 0);
+	}
+	
+	/** Gets the current updaterate. */
+	public int getUpdateRate() {
+		return 1000 / Math.max(lastUpdateDuration, 1);
 	}
 	
 	/** Returns the current update interval in milliseconds. */
