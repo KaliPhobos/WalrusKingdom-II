@@ -1,9 +1,12 @@
 package dinosws.walruskingdom.visual;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -73,6 +76,10 @@ public class GameWindow {
 	
 	/** The interval between screen updates. */
 	private int updateInterval = 40;
+	
+	/** The blank cursor. */
+	private static final Cursor BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
+			new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "Blank cursor");
 	
 	/** The constructor. */
 	public GameWindow(String gameTitle, GameScreen screen,
@@ -514,15 +521,45 @@ public class GameWindow {
 	}
 	
 	/** Shows the window and starts the rendering. */
-	public void show() {
+	public void showWindow() {
 		start();
 		window.setVisible(true);
 	}
 	
 	/** Hides the window and stops the rendering. */
-	public void hide() {
+	public void hideWindow() {
 		stop();
 		window.setVisible(false);
+	}
+	
+	/** Sets the default cursor. */
+	public void cursorDefault() {
+		window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	}
+	
+	/** Sets the wait cursor. */
+	public void cursorWait() {
+		window.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	}
+	
+	/** Sets the hand cursor. */
+	public void cursorHand() {
+		window.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	}
+	
+	/** Sets the crosshair cursor. */
+	public void cursorCrosshair() {
+		window.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+	}
+	
+	/** Sets the text cursor. */
+	public void cursorText() {
+		window.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+	}
+	
+	/** Hides the cursor. */
+	public void cursorHide() {
+		window.setCursor(BLANK_CURSOR);
 	}
 	
 	/** Returns the graphics object for the next frame to be rendered. */

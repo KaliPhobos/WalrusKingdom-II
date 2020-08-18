@@ -51,6 +51,9 @@ public class NotificationScreen implements GameScreen, KeyListener, MouseListene
 	public void onEnable(GameWindow window) {
 		// Initialize the running flag
 		isRunning = true;
+		
+		// Set the cursor
+		window.cursorHand();
 	}
 	
 	@Override

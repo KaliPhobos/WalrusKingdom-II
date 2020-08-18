@@ -20,6 +20,7 @@ public class TestScreen implements GameScreen {
 	@Override
 	public void onEnable(GameWindow window) {
 		System.out.println("Started the screen!");
+		window.cursorDefault();
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class Main {
 		window.setDisplayingTitle(true);
 		window.setDisplayingStats(true);
 		window.setUpdateInterval(40);
-		window.show();
+		window.showWindow();
 	}
 	
 	public static void oldMain() {
