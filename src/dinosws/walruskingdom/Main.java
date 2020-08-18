@@ -23,7 +23,7 @@ public class Main {
 		GameWindow window = new GameWindow("WalrusKindgom-II", screen, new Dimension(800, 600), null, false);
 		window.setDisplayingTitle(true);
 		window.setDisplayingStats(true);
-		window.setUpdateInterval(10);
+		window.setUpdateInterval(40);
 		window.pushScreen(new NotificationScreen(null, null));
 		window.show();
 	}
