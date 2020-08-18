@@ -40,8 +40,8 @@ public class GameWindow {
 	/** The game screen stack. */
 	private final Stack<GameScreen> screenStack;
 	
-	/** The currently rendering frame. */
-	private BufferedImage frame;
+	/** The game frame stack. */
+	private final Stack<BufferedImage> frameStack;
 	
 	/** The graphics of the currently rendering frame. */
 	private Graphics frameGraphics;
@@ -95,13 +95,6 @@ public class GameWindow {
 		// Avoid draw events caused by the OS to keep the framerate stable
 		window.setIgnoreRepaint(true);
 		
-		// Initialize the screen stack and push the new screen and register its events
-		screenStack = new Stack<GameScreen>();
-		pushScreen(screen);
-		
-		// Update the title
-		updateTitle();
-		
 		// Handle full-screen mode
 		if (fullScreen) {
 			// Undecorate, maximize the window and make it always be ontop and not resizeable
@@ -114,6 +107,31 @@ public class GameWindow {
 			if (minimumSize == null)
 				window.setMinimumSize(window.getSize());
 		}
+		
+		// Set up the draw area
+		canvas = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void paintComponent(Graphics graphics) {
+				// Only render, if the frame is not null
+				if (getFrame() == null)
+					return;
+				
+				// Draw the image
+				graphics.drawImage(getFrame(), 0, 0, null);
+			}
+		};
+		canvas.setPreferredSize(initialSize);
+		canvas.setSize(initialSize);
+		window.setContentPane(canvas);
+		
+		// Initialize the screen and frame stacks and push the new screen and register its events
+		screenStack = new Stack<GameScreen>();
+		frameStack = new Stack<BufferedImage>();
+		pushScreen(screen);
+		
+		// Update the title
+		updateTitle();
 		
 		// Handle window events
 		window.addWindowListener(new WindowListener() {
@@ -168,23 +186,6 @@ public class GameWindow {
 			public void windowClosed(WindowEvent e) { }
 		});
 		
-		// Set up the draw area
-		canvas = new JPanel() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void paintComponent(Graphics graphics) {
-				// Only render, if the frame is not null
-				if (frame == null)
-					return;
-				
-				// Draw the image
-				graphics.drawImage(frame, 0, 0, null);
-			}
-		};
-		canvas.setPreferredSize(initialSize);
-		canvas.setSize(initialSize);
-		window.setContentPane(canvas);
-		
 		// Finally, set up the timer
 		timer = new Timer(updateInterval, null);
 		timer.addActionListener(new ActionListener() {
@@ -194,7 +195,7 @@ public class GameWindow {
 				long currentTimestamp = System.currentTimeMillis();
 				
 				// Update the game logic
-				screen.onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
+				getScreen().onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
 				
 				// Update the last update timestamp
 				lastUpdateTimestamp = currentTimestamp;
@@ -243,6 +244,11 @@ public class GameWindow {
 		return screenStack.empty() ? null : screenStack.peek();
 	}
 	
+	/** Gets the currently active frame. */
+	private BufferedImage getFrame() {
+		return frameStack.empty() ? null : frameStack.peek();
+	}
+	
 	/** Gets whether the window is in full screen mode. */
 	public boolean isFullScreen() {
 		return fullScreen;
@@ -270,12 +276,12 @@ public class GameWindow {
 	
 	/** Gets the width of the buffer. */
 	public int getWidth() {
-		return frame != null ? frame.getWidth() : 0;
+		return getFrame() != null ? getFrame().getWidth() : 0;
 	}
 	
 	/** Gets the height of the buffer. */
 	public int getHeight() {
-		return frame != null ? frame.getHeight() : 0;
+		return getFrame() != null ? getFrame().getHeight() : 0;
 	}
 	
 	/** Gets the duration of the previous frame in milliseconds. */
@@ -313,11 +319,20 @@ public class GameWindow {
 		// Push the new screen
 		screenStack.push(screen);
 		
+		// Also create and push a new frame
+		frameStack.push(new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB));
+		
+		// Update the graphics
+		if (frameGraphics != null)
+			frameGraphics.dispose();
+		frameGraphics = getFrame().getGraphics();
+		
 		// Enable the screen
 		screen.onEnable(this);
 		
-		// And register the new events
-		addScreenEvents(screen);
+		// And register its events, if this is still the same screen
+		if (getScreen() == screen)
+			addScreenEvents(screen);
 	}
 	
 	/** Pops the current screen from the screen stack. */
@@ -335,8 +350,13 @@ public class GameWindow {
 		// Disable the screen
 		screen.onDisable(this);
 		
-		// Drop the current screen
+		// Drop the current screen and frame
 		screenStack.pop();
+		frameStack.pop();
+		
+		// Update the graphics
+		frameGraphics.dispose();
+		frameGraphics = getFrame().getGraphics();
 		
 		// Fetch the next screen
 		screen = getScreen();
@@ -344,8 +364,9 @@ public class GameWindow {
 		// Enable it
 		screen.onEnable(this);
 		
-		// And register its events
-		addScreenEvents(screen);
+		// And register its events, if this is still the same screen
+		if (getScreen() == screen)
+			addScreenEvents(screen);
 	}
 	
 	/** Adds all screen events. */
@@ -403,22 +424,29 @@ public class GameWindow {
 	}
 	
 	/** Returns the graphics object for the next frame to be rendered. */
-	public Graphics next() {
+	public Graphics next(boolean overlay) {
 		// Update the timestamp
 		lastFrameTimestamp = System.currentTimeMillis();
 		
-		// Fetch the dimensions of the window
-		final int width = canvas.getWidth(), height = canvas.getHeight();
-		
-		// Dispose of any previous frame
-		if (frameGraphics != null)
-			frameGraphics.dispose();
+		// Discard the existing graphics
+		frameGraphics.dispose();
 		
 		// Create the new image
-		frame = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
 		
-		// Create and return the graphics
-		return (frameGraphics = frame.getGraphics());
+		// Pop the old and push the new
+		frameStack.pop();
+		frameStack.push(image);
+		
+		// Create the graphics
+		frameGraphics = image.getGraphics();
+		
+		// Draw the previous frame if desired and possible
+		if (overlay && frameStack.size() > 1)
+			frameGraphics.drawImage(frameStack.get(frameStack.size() - 2), 0, 0, null);
+		
+		// Return the graphics
+		return frameGraphics;
 	}
 	
 	/** Draws the current frame and returns the result. */
@@ -430,7 +458,7 @@ public class GameWindow {
 		lastFrameDuration = (int)(System.currentTimeMillis() - lastFrameTimestamp);
 		
 		// And return the drawn frame
-		return frame;
+		return getFrame();
 	}
 	
 	/** Starts the regular screen updates. */

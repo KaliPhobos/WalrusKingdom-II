@@ -6,12 +6,14 @@ import java.awt.Graphics;
 
 import dinosws.walruskingdom.visual.GameWindow;
 
-public class TestScreen implements GameScreen {
+public class OverlayScreen implements GameScreen {
 	final Font font;
 	
-	public TestScreen() {
+	private int deltaSum = 0;
+	
+	public OverlayScreen() {
 		// TODO Auto-generated constructor stub
-		font = new Font("Times New Romans", Font.BOLD, 24);
+		font = new Font("Times New Romans", Font.BOLD, 36);
 	}
 
 	@Override
@@ -26,17 +28,19 @@ public class TestScreen implements GameScreen {
 
 	@Override
 	public void onUpdate(GameWindow window, int delta) {
+		deltaSum += delta;
 		System.out.println("Update!");
-		Graphics g = window.next(false);
-		g.setColor(new Color(255, 255, 255));
+		Graphics g = window.next(true);
+		g.setColor(new Color(255, 255, 0));
 		g.setFont(font);
-		g.drawString(String.format("Delta: %d", delta), 1, 20);
+		g.drawString("Test!", 1, 60);
 		window.draw();
-		window.pushScreen(new OverlayScreen());
+		if (deltaSum >= 1000)
+			window.popScreen();
 	}
 
 	@Override
 	public String getTitle() {
-		return "WalrusKingdom";
+		return "WalrusKingdom2";
 	}
 }
