@@ -20,7 +20,9 @@ public class Main {
 		// TODO Auto-generated method stub
 		//oldMain();
 		TestScreen screen = new TestScreen();
-		GameWindow window = new GameWindow(screen, new Dimension(300, 300), null, false);
+		GameWindow window = new GameWindow("WalrusKindgom-II", screen, new Dimension(800, 600), null, false);
+		window.setDisplayingTitle(true);
+		window.setDisplayingStats(true);
 		window.pushScreen(new NotificationScreen(null, null));
 		window.show();
 	}

@@ -15,7 +15,6 @@ public class NotificationScreen implements GameScreen, KeyListener {
 	private final KeyTranslator keyTranslator;
 	private final Font font;
 	private boolean isRunning;
-	private boolean isDrawn;
 	
 	/** The constructor. */
 	public NotificationScreen(String message, KeyTranslator keyTranslator) {
@@ -54,9 +53,8 @@ public class NotificationScreen implements GameScreen, KeyListener {
 
 	@Override
 	public void onEnable(GameWindow window) {
-		// Initialize the running and drawn flag
+		// Initialize the running flag
 		isRunning = true;
-		isDrawn = false;
 	}
 
 	@Override
@@ -73,11 +71,6 @@ public class NotificationScreen implements GameScreen, KeyListener {
 			return;
 		}
 		
-		// Otherwise, check, whether to draw the text
-		if (isDrawn)
-			return;
-		isDrawn = true;
-		
 		// Get the graphics
 		Graphics2D graphics = window.next(true);
 		
@@ -85,7 +78,8 @@ public class NotificationScreen implements GameScreen, KeyListener {
 		graphics.setFont(font);
 		
 		// Draw the text
-		graphics.drawString(message, 0, window.getWidth() - 5);
+		graphics.drawString(message, 0, window.getHeight() - 5);
+		graphics.drawString(String.format("Delta: %d", delta), 0, 20);
 		
 		// Render the frame
 		window.draw();

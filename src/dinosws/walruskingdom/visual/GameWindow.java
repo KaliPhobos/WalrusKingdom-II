@@ -32,6 +32,9 @@ public class GameWindow {
 	/** The rendering timer. */
 	private final Timer timer;
 	
+	/** The title of the game itself. */
+	private final String gameTitle;
+	
 	/** Whether the window is in full screen mode. */
 	private final boolean fullScreen;
 	
@@ -53,6 +56,9 @@ public class GameWindow {
 	/** Whether to display statistics in the title. */
 	private boolean displayStats;
 	
+	/** Whether to display the current screen title. */
+	private boolean displayTitle;
+	
 	/** The timestamp of the beginning of the previous update. */
 	private long lastUpdateTimestamp;
 	
@@ -66,7 +72,8 @@ public class GameWindow {
 	private int updateInterval = 40;
 	
 	/** The constructor. */
-	public GameWindow(GameScreen screen, Dimension initialSize, Dimension minimumSize, boolean fullScreen) {
+	public GameWindow(String gameTitle, GameScreen screen,
+			Dimension initialSize, Dimension minimumSize, boolean fullScreen) {
 		// Sanity check the sizes
 		if (initialSize == null || initialSize.width < 1 || initialSize.height < 1)
 			throw new IllegalArgumentException("One of the sizes is invalid.");
@@ -75,7 +82,8 @@ public class GameWindow {
 		if (screen == null)
 			throw new IllegalArgumentException("The screen may not be null.");
 		
-		// Copy the full screen flag
+		// Copy the title and full screen flag
+		this.gameTitle = gameTitle != null ? gameTitle : "";
 		this.fullScreen = fullScreen;
 		
 		// Create the new window
@@ -198,14 +206,22 @@ public class GameWindow {
 				// Update the game logic
 				getScreen().onUpdate(GameWindow.this, (int)(currentTimestamp - lastUpdateTimestamp));
 				
+				// Update the title
+				updateTitle();
+				
 				// Update the last update timestamp
 				lastUpdateTimestamp = currentTimestamp;
 			}
 		});
 	}
 	
-	/** Gets the title of the game screen. */
+	/** Gets the title of the game. */
 	public String getGameTitle() {
+		return gameTitle;
+	}
+	
+	/** Gets the title of the game screen. */
+	public String getScreenTitle() {
 		return getScreen().getTitle();
 	}
 	
@@ -216,27 +232,40 @@ public class GameWindow {
 	
 	/** Updates the title and returns the current one. */
 	public String updateTitle() {
-		// Get the game title
-		String gameTitle = getGameTitle();
+		// Get the screen title, if desired
+		final String screenTitle = displayTitle ? getScreenTitle() : "";
 		
-		// If no debug info is shown, just return the game title
-		if (!displayStats || gameTitle == "")
-		{
-			// Update the window if the current title is not the same
+		// Check, if detailed info needs to be printed
+		if (screenTitle == "" && !displayStats) {
 			if (window.getTitle() != gameTitle)
 				window.setTitle(gameTitle);
-			
-			// Return the game title
 			return gameTitle;
 		}
 		
-		// Otherwise assemble the detailed string
-		String newTitle = String.format("%s (%d fps)", gameTitle, getFrameRate());
+		// Create the new title string buffer
+		final StringBuffer titleBuffer = new StringBuffer(gameTitle);
+		
+		// Check, if screen info needs to be printed
+		if (screenTitle != "") {
+			// Check, if there was a game title
+			if (gameTitle != "")
+				titleBuffer.append(": ");
+			
+			// Append the screen title
+			titleBuffer.append(screenTitle);
+		}
+		
+		// Check, if additional statistics are printed
+		if (displayStats)
+			titleBuffer.append(String.format(" (%d fps)", getFrameRate()));
+		
+		// Compile the title
+		final String newTitle = titleBuffer.toString();
 		
 		// Update the window
 		window.setTitle(newTitle);
 		
-		// Return the new string
+		// Return the new title
 		return newTitle;
 	}
 	
@@ -253,6 +282,11 @@ public class GameWindow {
 	/** Gets whether the window is in full screen mode. */
 	public boolean isFullScreen() {
 		return fullScreen;
+	}
+	
+	/** Gets whether the window is displaying the screen title. */
+	public boolean isDisplayingTitle() {
+		return displayTitle;
 	}
 	
 	/** Gets whether the window is displaying stats. */
@@ -400,6 +434,11 @@ public class GameWindow {
 			window.removeMouseWheelListener((MouseWheelListener)screen);
 	}
 	
+	/** Sets whether the window is displaying the screen title. */
+	public void setDisplayingTitle(boolean state) {
+		displayTitle = state;
+	}
+	
 	/** Sets whether the window is displaying stats. */
 	public void setDisplayingStats(boolean state) {
 		displayStats = state;
@@ -428,9 +467,6 @@ public class GameWindow {
 	
 	/** Returns the graphics object for the next frame to be rendered. */
 	public Graphics2D next(boolean overlay) {
-		// Update the timestamp
-		lastFrameTimestamp = System.currentTimeMillis();
-		
 		// Discard the existing graphics
 		frameGraphics.dispose();
 		
@@ -461,11 +497,17 @@ public class GameWindow {
 		// Draw the frame
 		canvas.repaint();
 		
+		// Get the current timestamp
+		final long currentTimestamp = System.currentTimeMillis();
+		
 		// Calculate the frame time
-		lastFrameDuration = (int)(System.currentTimeMillis() - lastFrameTimestamp);
+		lastFrameDuration = (int)(currentTimestamp - lastFrameTimestamp);
+		
+		// Update the timestamp
+		lastFrameTimestamp = currentTimestamp;
 		
 		// And return the drawn frame
-		return getFrame();
+		return frameCurrent;
 	}
 	
 	/** Starts the regular screen updates. */
