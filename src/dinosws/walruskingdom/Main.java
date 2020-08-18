@@ -2,8 +2,8 @@ package dinosws.walruskingdom;
 
 import java.awt.Dimension;
 
-import dinosws.walruskingdom.engine.NotificationScreen;
-import dinosws.walruskingdom.engine.TestScreen;
+import dinosws.walruskingdom.screen.NotificationScreen;
+import dinosws.walruskingdom.screen.TestScreen;
 import dinosws.walruskingdom.visual.GameWindow;
 import kaliphobos.walruskingdom.general.debug;
 import kaliphobos.walruskingdom.gui.window;

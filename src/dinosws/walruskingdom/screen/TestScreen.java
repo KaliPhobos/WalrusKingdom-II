@@ -1,4 +1,4 @@
-package dinosws.walruskingdom.engine;
+package dinosws.walruskingdom.screen;
 
 import java.awt.Color;
 import java.awt.Font;

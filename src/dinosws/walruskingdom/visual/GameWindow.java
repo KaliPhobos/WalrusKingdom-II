@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import dinosws.walruskingdom.engine.GameScreen;
+import dinosws.walruskingdom.screen.GameScreen;
 
 /** Class representing the game window GUI. */
 public class GameWindow {
