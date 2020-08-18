@@ -47,6 +47,9 @@ public class GameWindow {
 	/** The graphics of the currently rendering frame. */
 	private Graphics2D frameGraphics;
 	
+	/** The currently displayed frame. */
+	private BufferedImage frameCurrent;
+	
 	/** Whether to display statistics in the title. */
 	private boolean displayStats;
 	
@@ -93,9 +96,6 @@ public class GameWindow {
 		// Handle the close operation
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		// Avoid draw events caused by the OS to keep the framerate stable
-		window.setIgnoreRepaint(true);
-		
 		// Handle full-screen mode
 		if (fullScreen) {
 			// Undecorate, maximize the window and make it always be ontop and not resizeable
@@ -119,7 +119,7 @@ public class GameWindow {
 					return;
 				
 				// Draw the image
-				graphics.drawImage(getFrame(), 0, 0, null);
+				graphics.drawImage(frameCurrent, 0, 0, null);
 			}
 		};
 		canvas.setPreferredSize(initialSize);
@@ -322,6 +322,7 @@ public class GameWindow {
 		
 		// Also create and push a new frame
 		frameStack.push(new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB));
+		frameCurrent = getFrame();
 		
 		// Update the graphics
 		if (frameGraphics != null)
@@ -354,6 +355,7 @@ public class GameWindow {
 		// Drop the current screen and frame
 		screenStack.pop();
 		frameStack.pop();
+		frameCurrent = getFrame();
 		
 		// Update the graphics
 		frameGraphics.dispose();
@@ -453,7 +455,10 @@ public class GameWindow {
 	
 	/** Draws the current frame and returns the result. */
 	public BufferedImage draw() {
-		// Update the graphics
+		// Exchange the frame
+		frameCurrent = getFrame();
+		
+		// Draw the frame
 		canvas.repaint();
 		
 		// Calculate the frame time
