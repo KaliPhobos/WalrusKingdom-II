@@ -3,6 +3,7 @@ package dinosws.walruskingdom.visual;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -44,7 +45,7 @@ public class GameWindow {
 	private final Stack<BufferedImage> frameStack;
 	
 	/** The graphics of the currently rendering frame. */
-	private Graphics frameGraphics;
+	private Graphics2D frameGraphics;
 	
 	/** Whether to display statistics in the title. */
 	private boolean displayStats;
@@ -325,7 +326,7 @@ public class GameWindow {
 		// Update the graphics
 		if (frameGraphics != null)
 			frameGraphics.dispose();
-		frameGraphics = getFrame().getGraphics();
+		frameGraphics = (Graphics2D)getFrame().getGraphics();
 		
 		// Enable the screen
 		screen.onEnable(this);
@@ -356,7 +357,7 @@ public class GameWindow {
 		
 		// Update the graphics
 		frameGraphics.dispose();
-		frameGraphics = getFrame().getGraphics();
+		frameGraphics = (Graphics2D)getFrame().getGraphics();
 		
 		// Fetch the next screen
 		screen = getScreen();
@@ -424,7 +425,7 @@ public class GameWindow {
 	}
 	
 	/** Returns the graphics object for the next frame to be rendered. */
-	public Graphics next(boolean overlay) {
+	public Graphics2D next(boolean overlay) {
 		// Update the timestamp
 		lastFrameTimestamp = System.currentTimeMillis();
 		
@@ -439,7 +440,7 @@ public class GameWindow {
 		frameStack.push(image);
 		
 		// Create the graphics
-		frameGraphics = image.getGraphics();
+		frameGraphics = (Graphics2D)image.getGraphics();
 		
 		// Draw the previous frame if desired and possible
 		if (overlay && frameStack.size() > 1)
@@ -453,7 +454,7 @@ public class GameWindow {
 	/** Draws the current frame and returns the result. */
 	public BufferedImage draw() {
 		// Update the graphics
-		window.repaint();
+		canvas.repaint();
 		
 		// Calculate the frame time
 		lastFrameDuration = (int)(System.currentTimeMillis() - lastFrameTimestamp);
